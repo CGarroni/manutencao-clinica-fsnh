@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <title>Manutenção Clínica — FSNH</title>
+
+  <!-- Bibliotecas externas -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+
+  <!-- Firebase (módulo ES) -->
+  <script type="module" src="src/js/firebase.js"></script>
+
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="src/css/style.css" />
+</head>
+<body>
+
+<header>
+  <img src="src/assets/logo-fsnh.png" alt="FSNH" class="header-logo" />
+  <div class="header-text">
+    <h1>Manutenção Clínica</h1>
+    <p>Fundação de Saúde Pública de Novo Hamburgo</p>
+  </div>
+  <div class="badge-chamado" id="header-num">Novo Chamado</div>
+</header>
+
+<main>
+
+  <!-- STEP 1: FORMULÁRIO -->
+  <div class="step active" id="step-form">
+    <div class="card">
+      <div class="chamado-num-display">
+        <small>Nº do Chamado</small>
+        <span id="num-value">—</span>
+      </div>
+
+      <div class="card-title"><span>🏥</span> Identificação</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Solicitante <span class="required-star">*</span></label>
+          <input type="text" id="solicitante" placeholder="Seu Nome" />
+        </div>
+        <div class="form-group">
+          <label>Setor <span class="required-star">*</span></label>
+          <input type="text" id="setor" placeholder="Ex: UTI, Pronto-Socorro..." />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Leito / Quarto</label>
+          <input type="text" id="leito" placeholder="Ex: 12A, Leito 5..." />
+        </div>
+        <div class="form-group">
+          <label>Data / Hora</label>
+          <input type="text" id="datetime" readonly />
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="card-title"><span>🔧</span> Equipamento</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Equipamento <span class="required-star">*</span></label>
+          <select id="equipamento">
+            <option value="">Selecione...</option>
+            <option>Monitor</option>
+            <option>Cama</option>
+            <option>Oxímetro de Transporte</option>
+            <option>ECG</option>
+            <option>Eletro</option>
+            <option>Lâmina de Laringoscópio</option>
+            <option>Respirador</option>
+            <option>MAP</option>
+            <option>Berço</option>
+            <option>Parede de Gases</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Marca / Modelo</label>
+          <input type="text" id="marca" placeholder="Ex: Philips MX800..." />
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Falha Identificada <span class="required-star">*</span></label>
+          <select id="falha">
+            <option value="">Selecione...</option>
+            <option>Falha</option>
+            <option>Não Liga</option>
+            <option>Quebrado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Descrição do Problema <span class="required-star">*</span></label>
+          <textarea id="descricao" placeholder="Descreva detalhadamente o problema observado..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="enviarChamado()">
+        📨 Enviar para Manutenção Clínica
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2: ASSINATURAS -->
+  <div class="step" id="step-sig">
+    <div class="card">
+      <div class="chamado-num-display">
+        <small>Chamado Enviado ✓</small>
+        <span id="num-value-2">—</span>
+      </div>
+
+      <div class="status-bar">
+        📬 Chamado enviado para Manutenção Clínica. Após a execução do serviço, colete as assinaturas abaixo.
+      </div>
+
+      <div class="card-title"><span>✍️</span> Assinatura — Técnico Responsável</div>
+      <div class="form-group" style="margin-bottom:10px;">
+        <label>Nome do Técnico <span class="required-star">*</span></label>
+        <input type="text" id="tecnico-nome" placeholder="Nome completo do responsável técnico" />
+      </div>
+      <div class="sig-wrapper" style="margin-bottom:20px;">
+        <canvas id="sig-tecnico"></canvas>
+        <button class="sig-clear" onclick="clearSig('tecnico')">Limpar</button>
+        <div class="sig-label-overlay">Assine aqui com o dedo ou caneta</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card-title"><span>✍️</span> Assinatura — Responsável do Setor Solicitante</div>
+      <div class="form-group" style="margin-bottom:10px;">
+        <label>Nome do Responsável <span class="required-star">*</span></label>
+        <input type="text" id="resp-nome" placeholder="Nome completo do responsável do setor" />
+      </div>
+      <div class="sig-wrapper" style="margin-bottom:20px;">
+        <canvas id="sig-resp"></canvas>
+        <button class="sig-clear" onclick="clearSig('resp')">Limpar</button>
+        <div class="sig-label-overlay">Assine aqui com o dedo ou caneta</div>
+      </div>
+
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Observações do Técnico <span class="required-star">*</span></label>
+          <textarea id="obs-tecnico" placeholder="Descreva o serviço executado, peças substituídas, etc..." style="min-height:80px;"></textarea>
+        </div>
+      </div>
+
+      <button class="btn btn-success" onclick="finalizarChamado()">
+        ✅ Finalizar e Arquivar Chamado
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 3: SUCESSO -->
+  <div class="step" id="step-done">
+    <div class="card">
+      <div id="success-screen">
+        <div class="check-icon">✅</div>
+        <h2>Chamado Finalizado!</h2>
+        <p>O chamado <span class="num" id="done-num"></span> foi arquivado com sucesso.<br/>
+        Um e-mail com as assinaturas foi enviado ao responsável pelo armazenamento.</p>
+        <br/>
+        <button class="btn btn-primary" onclick="novoChamado()" style="max-width:260px;margin:0 auto;">
+          + Novo Chamado
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div id="toast"></div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Lógica principal -->
+<script src="src/js/main.js"></script>
+
+</body>
+</html>

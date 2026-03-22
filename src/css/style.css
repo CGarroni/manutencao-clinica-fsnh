@@ -290,46 +290,58 @@
 @media (max-width: 600px) {
   .txt-mobile  { display: inline; }
   .txt-desktop { display: none; }
+
+  /* Header: linha unica — logo | titulo | badge */
   header {
-    padding: 12px 10px;
+    padding: 10px 14px;
     gap: 10px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .header-logo {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
-  }
-
-  .header-text h1 {
-    font-size: 16px;
-  }
-
-  .header-text p {
-    /* Substitui texto longo por FSNH no mobile via CSS */
-    font-size: 9px;
-    letter-spacing: 1px;
-  }
-
-  .badge-chamado {
-    position: static;
-    transform: none;
-    display: block;
-    text-align: center;
-    font-size: 10px;
-    padding: 3px 8px;
-    margin-top: 2px;
-    width: 100%;
-    border-radius: 6px;
-  }
-
-  header {
-    flex-wrap: wrap;
-    justify-content: center;
   }
 
   .header-text {
     flex: 1;
+    text-align: center;
     min-width: 0;
+  }
+
+  .header-text h1 {
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .header-text p {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    margin-top: 2px;
+  }
+
+  /* Badge redondo a direita */
+  .badge-chamado {
+    position: static;
+    transform: none;
+    flex-shrink: 0;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+    padding: 4px;
+    line-height: 1.2;
+    white-space: normal;
+    word-break: break-all;
   }
 }

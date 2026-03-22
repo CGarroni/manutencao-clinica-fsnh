@@ -1,3 +1,7 @@
+/* ── TEXT VISIBILITY HELPERS ─────────────────────────────────── */
+.txt-mobile  { display: none; }
+.txt-desktop { display: inline; }
+
 /* ============================================================
    style.css — Estilos globais
    Projeto: Manutenção Clínica FSPNH
@@ -28,7 +32,7 @@
       min-height: 100vh;
       color: var(--gray-800);
       background-color: var(--blue-dark);
-      background-image: url('../assets/img-main.jpg');
+      background-image: url('../assets/hospital.jpg');
       background-size: cover;
       background-position: center top;
       background-attachment: fixed;
@@ -282,3 +286,50 @@
     #toast.error   { background: #991b1b; }
 
     .required-star { color: var(--red); }
+/* ── MOBILE HEADER FIXES ─────────────────────────────────────── */
+@media (max-width: 600px) {
+  .txt-mobile  { display: inline; }
+  .txt-desktop { display: none; }
+  header {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+
+  .header-logo {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+
+  .header-text h1 {
+    font-size: 16px;
+  }
+
+  .header-text p {
+    /* Substitui texto longo por FSNH no mobile via CSS */
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .badge-chamado {
+    position: static;
+    transform: none;
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    padding: 3px 8px;
+    margin-top: 2px;
+    width: 100%;
+    border-radius: 6px;
+  }
+
+  header {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .header-text {
+    flex: 1;
+    min-width: 0;
+  }
+}

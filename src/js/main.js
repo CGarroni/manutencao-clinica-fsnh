@@ -1,6 +1,6 @@
 // ============================================================
 // main.js — Lógica principal do sistema de chamados
-// Projeto: Manutenção Clínica FSNH
+// Projeto: Manutenção Clínica FSPNH
 // ============================================================
 
 // ── CONFIG EMAILJS ─────────────────────────────────────────────────────────
@@ -11,7 +11,7 @@
 
   // ── E-MAIL DO RESPONSÁVEL DE ARQUIVAMENTO ───────────────────────────────────
   // Altere aqui para o e-mail correto
-  const EMAIL_RESPONSAVEL = 'responsavel@fsnh.com.br';
+  const EMAIL_RESPONSAVEL = 'relatoriosmanutclinica@gmail.com';
 
   emailjs.init(EMAILJS_PUBLIC_KEY);
 
@@ -27,7 +27,19 @@
     const data = JSON.parse(localStorage.getItem(key) || '{"ym":"","seq":0}');
     const seq  = data.ym === ym ? data.seq + 1 : 1;
     localStorage.setItem(key, JSON.stringify({ ym, seq }));
-    return 'MC-' + ym + '-' + String(seq).padStart(4,'0');
+    // Número completo salvo nos dados (ex: MC-2603-0001)
+    chamadoData._numCompleto = 'MC-' + ym + '-' + String(seq).padStart(4,'0');
+    // No header/badge: mobile mostra curto, desktop mostra completo
+    return chamadoData._numCompleto;
+  }
+
+  // Retorna número curto para mobile (MC-0001) ou completo para desktop
+  function getDisplayNum(numCompleto) {
+    if (window.innerWidth <= 600) {
+      const parts = numCompleto.split('-');
+      return 'MC-' + parts[2]; // MC-0001
+    }
+    return numCompleto; // MC-2603-0001
   }
 
   // ── INIT ───────────────────────────────────────────────────────────────────
@@ -38,12 +50,13 @@
       now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 
     const num = getNextNum();
-    chamadoData.numero  = num;
+    chamadoData.numero   = chamadoData._numCompleto; // sempre salva completo
     chamadoData.dataHora = document.getElementById('datetime').value;
-    document.getElementById('num-value').textContent   = num;
-    document.getElementById('num-value-2').textContent = num;
-    document.getElementById('done-num').textContent    = num;
-    document.getElementById('header-num').textContent  = num;
+    const displayNum     = getDisplayNum(num);
+    document.getElementById('num-value').textContent   = displayNum;
+    document.getElementById('num-value-2').textContent = displayNum;
+    document.getElementById('done-num').textContent    = num; // sucesso mostra completo
+    document.getElementById('header-num').textContent  = displayNum;
   });
 
 // ── VALIDAÇÃO ──────────────────────────────────────────────────────────────

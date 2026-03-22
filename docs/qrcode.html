@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
-  <title>QR Code — Manutenção Clínica FSNH</title>
+  <title>QR Code — Manutenção Clínica FSPNH</title>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet"/>
   <style>
@@ -160,13 +160,13 @@
 </head>
 <body>
 
-<h1>🏥 QR Codes — Manutenção Clínica FSNH</h1>
+<h1>🏥 QR Codes — Manutenção Clínica FSPNH</h1>
 
 <div class="cards-wrapper">
   <!-- Card único (pode duplicar para cada setor) -->
   <div class="qr-card">
     <div class="logo-header">
-      <img src="../src/assets/logo-fsnh.png" alt="FSNH" id="logo-img"/>
+      <img src="../src/assets/logo.jpg" alt="FSPNH" id="logo-img"/>
       <div>
         <h2>Manutenção Clínica</h2>
         <p>FSNH</p>
@@ -191,15 +191,50 @@
 <script>
   const URL_SISTEMA = 'https://manutencaoclinica.vercel.app';
 
-  // Gera QR Code
-  new QRCode(document.getElementById('qrcode'), {
-    text:           URL_SISTEMA,
-    width:          200,
-    height:         200,
-    colorDark:      '#0a2342',
-    colorLight:     '#ffffff',
-    correctLevel:   QRCode.CorrectLevel.H  // nível alto para suportar logo no centro
+  // Gera QR Code e depois sobrepõe logo no canvas
+  const qrDiv = document.getElementById('qrcode');
+  const qr = new QRCode(qrDiv, {
+    text:         URL_SISTEMA,
+    width:        200,
+    height:       200,
+    colorDark:    '#0a2342',
+    colorLight:   '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
   });
+
+  // Após o QR Code ser gerado, desenha o logo no centro do canvas
+  setTimeout(() => {
+    const canvas = qrDiv.querySelector('canvas');
+    if (!canvas) return;
+
+    const ctx    = canvas.getContext('2d');
+    const logoEl = document.getElementById('logo-img');
+    const size   = canvas.width;
+    const lSize  = size * 0.22; // logo ocupa 22% do QR
+    const lX     = (size - lSize) / 2;
+    const lY     = (size - lSize) / 2;
+
+    // Fundo branco circular atrás do logo
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, lSize / 2 + 6, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+
+    // Desenha o logo centralizado
+    const img = new Image();
+    img.onload = () => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, lSize / 2, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, lX, lY, lSize, lSize);
+      ctx.restore();
+
+      // Esconde img overlay (já desenhamos no canvas)
+      document.getElementById('qr-logo-center').style.display = 'none';
+    };
+    img.src = logoEl.src;
+  }, 300);
 </script>
 </body>
 </html>

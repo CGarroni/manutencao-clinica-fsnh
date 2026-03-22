@@ -135,6 +135,28 @@
     (who === 'tecnico' ? sigTecnico : sigResp)?.clear();
   }
 
+  // ── COMPRESSOR DE ASSINATURA ─────────────────────────────────────────────────
+  // Reduz assinatura para JPEG 400x150px com fundo branco — fica abaixo de 10KB
+  function comprimirAssinatura(pad) {
+    const offscreen = document.createElement('canvas');
+    offscreen.width  = 400;
+    offscreen.height = 150;
+    const ctx = offscreen.getContext('2d');
+
+    // Fundo branco
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, 400, 150);
+
+    // Desenha assinatura original redimensionada
+    const original = pad.toDataURL('image/png');
+    const img = new Image();
+    img.src = original;
+    ctx.drawImage(img, 0, 0, 400, 150);
+
+    // Exporta como JPEG com qualidade 0.6 (~8-12KB)
+    return offscreen.toDataURL('image/jpeg', 0.6);
+  }
+
   // ── FINALIZAR CHAMADO ──────────────────────────────────────────────────────
   async function finalizarChamado() {
     if (!validate([
@@ -152,8 +174,9 @@
     const tecnicoNome = document.getElementById('tecnico-nome').value.trim();
     const respNome    = document.getElementById('resp-nome').value.trim();
     const obsTecnico  = document.getElementById('obs-tecnico').value.trim();
-    const sigTecImg   = sigTecnico.toDataURL('image/png');
-    const sigRespImg  = sigResp.toDataURL('image/png');
+    // Comprime assinaturas para JPEG com qualidade reduzida (limite EmailJS: 50KB)
+    const sigTecImg  = comprimirAssinatura(sigTecnico);
+    const sigRespImg = comprimirAssinatura(sigResp);
 
     const dadosFinais = {
       ...chamadoData,

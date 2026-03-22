@@ -2,239 +2,62 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
-  <title>QR Code — Manutenção Clínica FSPNH</title>
+  <title>QR Code — Manutenção Clínica FSNH</title>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Barlow', sans-serif;
-      background: #f1f5f9;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
-      gap: 32px;
-    }
-
-    h1 {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 22px;
-      color: #0a2342;
-      text-align: center;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .cards-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 24px;
-      justify-content: center;
-    }
-
-    .qr-card {
-      background: white;
-      border-radius: 16px;
-      padding: 28px 24px 20px;
-      box-shadow: 0 4px 24px rgba(10,35,66,0.12);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      border-top: 5px solid #1a4a8a;
-      width: 280px;
-    }
-
-    .qr-card .logo-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .qr-card .logo-header img {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      object-fit: contain;
-      border: 2px solid #00b4d8;
-      background: white;
-      padding: 3px;
-    }
-
-    .qr-card .logo-header div h2 {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 15px;
-      color: #0a2342;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .qr-card .logo-header div p {
-      font-size: 10px;
-      color: #00b4d8;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    /* QR wrapper with logo in center */
-    .qr-wrapper {
-      position: relative;
-      width: 200px;
-      height: 200px;
-    }
-
-    #qrcode canvas, #qrcode img {
-      border-radius: 8px;
-    }
-
-    .qr-logo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: white;
-      border: 3px solid white;
-      object-fit: contain;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-
-    .qr-card .setor-label {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: #1a4a8a;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-align: center;
-    }
-
-    .qr-card .url-label {
-      font-size: 10px;
-      color: #94a3b8;
-      text-align: center;
-      word-break: break-all;
-    }
-
-    .qr-card .instrucao {
-      font-size: 12px;
-      color: #475569;
-      text-align: center;
-      line-height: 1.5;
-      background: #f8fafc;
-      border-radius: 8px;
-      padding: 8px 12px;
-      border-left: 3px solid #00b4d8;
-    }
-
-    .btn-print {
-      background: linear-gradient(135deg, #1a4a8a, #2d72d2);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 12px 32px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(26,74,138,0.3);
-    }
-    .btn-print:hover { opacity: 0.9; }
-
-    @media print {
-      body { background: white; padding: 0; }
-      .btn-print { display: none; }
-      h1 { display: none; }
-      .cards-wrapper { gap: 0; }
-      .qr-card { box-shadow: none; break-inside: avoid; border: 1px solid #e2e8f0; }
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Barlow',sans-serif;background:#f1f5f9;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 16px;gap:28px}
+    h1{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:#0a2342;text-align:center;letter-spacing:1px;text-transform:uppercase}
+    .qr-card{background:white;border-radius:16px;padding:28px 24px 20px;box-shadow:0 4px 24px rgba(10,35,66,0.12);display:flex;flex-direction:column;align-items:center;gap:14px;border-top:5px solid #1a4a8a;width:280px}
+    .logo-header{display:flex;align-items:center;gap:10px}
+    .logo-header img{width:44px;height:44px;border-radius:50%;object-fit:contain;border:2px solid #00b4d8;background:white;padding:3px}
+    .logo-header h2{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:#0a2342;text-transform:uppercase;letter-spacing:0.5px}
+    .logo-header p{font-size:10px;color:#00b4d8;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+    #qrcode{width:200px;height:200px}
+    #qrcode canvas{border-radius:8px;display:block}
+    .setor-label{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#1a4a8a;text-transform:uppercase;letter-spacing:1px;text-align:center}
+    .url-label{font-size:10px;color:#94a3b8;text-align:center}
+    .instrucao{font-size:12px;color:#475569;text-align:center;line-height:1.5;background:#f8fafc;border-radius:8px;padding:8px 12px;border-left:3px solid #00b4d8}
+    .btn-print{background:linear-gradient(135deg,#1a4a8a,#2d72d2);color:white;border:none;border-radius:10px;padding:12px 32px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+    @media print{.btn-print{display:none}h1{display:none}.qr-card{box-shadow:none;border:1px solid #e2e8f0}}
   </style>
 </head>
 <body>
 
-<h1>🏥 QR Codes — Manutenção Clínica FSPNH</h1>
+<h1>🏥 QR Code — Manutenção Clínica FSNH</h1>
 
-<div class="cards-wrapper">
-  <!-- Card único (pode duplicar para cada setor) -->
-  <div class="qr-card">
-    <div class="logo-header">
-      <img src="../src/assets/logo.jpg" alt="FSPNH" id="logo-img"/>
-      <div>
-        <h2>Manutenção Clínica</h2>
-        <p>FSNH</p>
-      </div>
+<div class="qr-card">
+  <div class="logo-header">
+    <img src="data:image/jpeg;base64,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" alt="FSPNH"/>
+    <div>
+      <h2>Manutenção Clínica</h2>
+      <p>FSNH</p>
     </div>
+  </div>
 
-    <div class="qr-wrapper">
-      <div id="qrcode"></div>
-      <img class="qr-logo" src="../src/assets/logo.jpg" alt="Logo" id="qr-logo-center"/>
-    </div>
+  <div id="qrcode"></div>
 
-    <div class="setor-label">📱 Abrir Chamado</div>
-    <div class="url-label">manutencaoclinica.vercel.app</div>
-    <div class="instrucao">
-      Aponte a câmera do celular para o QR Code e abra o link para registrar um chamado de manutenção.
-    </div>
+  <div class="setor-label">📱 Abrir Chamado</div>
+  <div class="url-label">manutencaoclinica.vercel.app</div>
+  <div class="instrucao">
+    Aponte a câmera do celular para o QR Code e abra o link para registrar um chamado de manutenção.
   </div>
 </div>
 
 <button class="btn-print" onclick="window.print()">🖨️ Imprimir QR Code</button>
 
 <script>
-  const URL_SISTEMA = 'https://manutencaoclinica.vercel.app';
-
-  // Gera QR Code e depois sobrepõe logo no canvas
-  const qrDiv = document.getElementById('qrcode');
-  const qr = new QRCode(qrDiv, {
-    text:         URL_SISTEMA,
-    width:        200,
-    height:       200,
-    colorDark:    '#0a2342',
-    colorLight:   '#ffffff',
-    correctLevel: QRCode.CorrectLevel.H
-  });
-
-  // Após o QR Code ser gerado, desenha o logo no centro do canvas
-  setTimeout(() => {
-    const canvas = qrDiv.querySelector('canvas');
-    if (!canvas) return;
-
-    const ctx    = canvas.getContext('2d');
-    const logoEl = document.getElementById('logo-img');
-    const size   = canvas.width;
-    const lSize  = size * 0.22; // logo ocupa 22% do QR
-    const lX     = (size - lSize) / 2;
-    const lY     = (size - lSize) / 2;
-
-    // Fundo branco circular atrás do logo
-    ctx.beginPath();
-    ctx.arc(size / 2, size / 2, lSize / 2 + 6, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-
-    // Desenha o logo centralizado
-    const img = new Image();
-    img.onload = () => {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(size / 2, size / 2, lSize / 2, 0, Math.PI * 2);
-      ctx.clip();
-      ctx.drawImage(img, lX, lY, lSize, lSize);
-      ctx.restore();
-
-      // Esconde img overlay (já desenhamos no canvas)
-      document.getElementById('qr-logo-center').style.display = 'none';
-    };
-    img.src = logoEl.src;
-  }, 300);
+  window.onload = function() {
+    new QRCode(document.getElementById('qrcode'), {
+      text:         'https://manutencaoclinica.vercel.app',
+      width:        200,
+      height:       200,
+      colorDark:    '#0a2342',
+      colorLight:   '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  };
 </script>
 </body>
-</html>
+</html

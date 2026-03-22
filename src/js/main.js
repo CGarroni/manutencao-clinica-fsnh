@@ -91,6 +91,8 @@
       marca:       document.getElementById('marca').value.trim() || '—',
       falha:       document.getElementById('falha').value,
       descricao:   document.getElementById('descricao').value.trim(),
+      // Link direto para o técnico abrir a OS no celular
+      link_os:     'https://manutencaoclinica.vercel.app/os.html?os=' + chamadoData.numero,
     };
 
     const btn = document.querySelector('#step-form .btn');

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <link rel="shortcut icon" href="../src/assets/favicon.ico" type="image/x-icon">
+  <title>Manual de Uso — Manutenção Clínica FSPNH</title>
+  <link rel="icon" type="image/jpeg" href="../src/assets/logo.jpg"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--blue-dark:#0a2342;--blue-mid:#1a4a8a;--blue-light:#2d72d2;--teal:#00b4d8;--gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-600:#475569;--gray-800:#1e293b;--green:#22c55e;--orange:#f97316}
+    body{font-family:'Barlow',sans-serif;background:var(--gray-50);color:var(--gray-800);min-height:100vh}
+    header{background:linear-gradient(135deg,var(--blue-dark),var(--blue-mid));padding:16px 24px;display:flex;align-items:center;gap:14px;border-bottom:3px solid var(--teal)}
+    .hlogo{width:52px;height:52px;border-radius:50%;object-fit:contain;background:white;padding:4px;border:2px solid var(--teal)}
+    .htxt h1{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:white;letter-spacing:1px;text-transform:uppercase}
+    .htxt p{font-size:11px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+    main{max-width:800px;margin:32px auto;padding:0 16px 60px}
+    .intro{background:white;border-radius:12px;padding:28px;box-shadow:0 2px 16px rgba(10,35,66,.08);margin-bottom:24px;border-left:5px solid var(--teal)}
+    .intro h2{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:var(--blue-mid);margin-bottom:8px}
+    .intro p{color:var(--gray-600);font-size:14px;line-height:1.7}
+    .section{background:white;border-radius:12px;padding:28px;box-shadow:0 2px 16px rgba(10,35,66,.08);margin-bottom:20px}
+    .section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--gray-200)}
+    .section-num{width:36px;height:36px;border-radius:50%;background:var(--blue-mid);color:white;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .section-header h2{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:var(--blue-mid);text-transform:uppercase;letter-spacing:1px}
+    .section-header .who{font-size:11px;color:var(--teal);font-weight:600;letter-spacing:1px;text-transform:uppercase;display:block;margin-top:2px}
+    .step{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+    .step-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+    .step-content h3{font-size:15px;font-weight:600;color:var(--gray-800);margin-bottom:4px}
+    .step-content p{font-size:13px;color:var(--gray-600);line-height:1.6}
+    .step-content .tip{background:var(--gray-100);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--gray-600);margin-top:6px;border-left:3px solid var(--teal)}
+    .divider{height:1px;background:var(--gray-200);margin:14px 0}
+    .badge{display:inline-block;background:var(--blue-light);color:white;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:.5px}
+    .badge.green{background:#16a34a}
+    .badge.orange{background:var(--orange)}
+    .flow{background:linear-gradient(135deg,var(--blue-dark),var(--blue-mid));border-radius:12px;padding:24px;margin-bottom:24px;color:white}
+    .flow h2{font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:16px;text-align:center}
+    .flow-steps{display:flex;flex-direction:column;gap:8px}
+    .flow-step{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.08);border-radius:8px;padding:10px 14px}
+    .flow-step .fs-icon{font-size:20px;flex-shrink:0}
+    .flow-step .fs-text{font-size:13px;line-height:1.4}
+    .flow-step .fs-text strong{color:var(--teal);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:2px}
+    .arrow{text-align:center;color:var(--teal);font-size:18px;margin:2px 0}
+    .url-box{background:var(--gray-100);border:1px solid var(--gray-200);border-radius:8px;padding:10px 14px;font-family:monospace;font-size:13px;color:var(--blue-mid);margin:8px 0;word-break:break-all}
+    .print-btn{display:none}
+    @media print{
+      header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .flow{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .section-num{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .print-btn{display:none!important}
+    }
+    .btn-print{background:linear-gradient(135deg,var(--blue-mid),var(--blue-light));color:white;border:none;border-radius:10px;padding:12px 28px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:block;margin:0 auto 32px}
+  </style>
+</head>
+<body>
+<header>
+  <img src="../src/assets/logo.jpg" class="hlogo" alt="FSPNH"/>
+  <div class="htxt">
+    <h1>Manual de Uso</h1>
+    <p>Sistema de Manutenção Clínica — FSNH</p>
+  </div>
+</header>
+<main>
+
+  <button class="btn-print" onclick="window.print()">🖨️ Imprimir Manual</button>
+
+  <!-- INTRO -->
+  <div class="intro">
+    <h2>Sobre o Sistema</h2>
+    <p>O Sistema de Manutenção Clínica da FSPNH é uma plataforma digital para abertura, acompanhamento e finalização de Ordens de Serviço de equipamentos hospitalares. Substitui fichas físicas e garante rastreabilidade completa de todos os chamados.</p>
+  </div>
+
+  <!-- FLUXO GERAL -->
+  <div class="flow">
+    <h2>⚡ Fluxo Completo</h2>
+    <div class="flow-steps">
+      <div class="flow-step"><div class="fs-icon">📱</div><div class="fs-text"><strong>Setor Solicitante</strong>Escaneia QR Code fixado no setor e abre o formulário</div></div>
+      <div class="arrow">↓</div>
+      <div class="flow-step"><div class="fs-icon">📝</div><div class="fs-text"><strong>Abertura da OS</strong>Preenche os dados do equipamento e problema e envia</div></div>
+      <div class="arrow">↓</div>
+      <div class="flow-step"><div class="fs-icon">📧</div><div class="fs-text"><strong>E-mail Manutenção</strong>Equipe recebe e-mail com dados + link para abrir a OS</div></div>
+      <div class="arrow">↓</div>
+      <div class="flow-step"><div class="fs-icon">🔧</div><div class="fs-text"><strong>Técnico executa o serviço</strong>Vai ao setor, realiza a manutenção</div></div>
+      <div class="arrow">↓</div>
+      <div class="flow-step"><div class="fs-icon">✍️</div><div class="fs-text"><strong>Finalização e Assinaturas</strong>Abre OS pelo link do e-mail, preenche serviço executado e coleta assinaturas</div></div>
+      <div class="arrow">↓</div>
+      <div class="flow-step"><div class="fs-icon">📊</div><div class="fs-text"><strong>Arquivamento</strong>Relatório enviado por e-mail e OS salva no Firebase para métricas</div></div>
+    </div>
+  </div>
+
+  <!-- SETOR SOLICITANTE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div>
+        <h2>Abrindo um Chamado</h2>
+        <span class="who">👥 Quem usa: Setor Solicitante</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">📱</div>
+      <div class="step-content">
+        <h3>Escaneie o QR Code</h3>
+        <p>Aponte a câmera do celular para o QR Code fixado no seu setor. O link abrirá automaticamente no navegador.</p>
+        <div class="tip">💡 O QR Code leva diretamente para o formulário de abertura de chamado.</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">👤</div>
+      <div class="step-content">
+        <h3>Preencha a Identificação</h3>
+        <p>Informe seu <strong>nome</strong>, o <strong>setor</strong> e o <strong>leito/quarto</strong> onde está o equipamento com problema.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">🔧</div>
+      <div class="step-content">
+        <h3>Informe o Equipamento</h3>
+        <p>Selecione o <strong>equipamento</strong> na lista, informe a <strong>marca/modelo</strong> se souber, selecione o <strong>tipo de falha</strong> e descreva detalhadamente o problema.</p>
+        <div class="tip">💡 Quanto mais detalhes na descrição, mais rápido o técnico resolverá o problema.</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">📨</div>
+      <div class="step-content">
+        <h3>Clique em "Enviar para Manutenção Clínica"</h3>
+        <p>O chamado será enviado automaticamente para a equipe de manutenção. Guarde o <strong>número da OS</strong> gerado para acompanhamento.</p>
+        <div class="tip">💡 O número da OS segue o padrão MC-AAMM-0000 (ex: MC-2603-0042)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TÉCNICO -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div>
+        <h2>Executando e Finalizando a OS</h2>
+        <span class="who">🔧 Quem usa: Técnico de Manutenção</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">📧</div>
+      <div class="step-content">
+        <h3>Receba o e-mail</h3>
+        <p>Um e-mail chegará na caixa da Manutenção Clínica com os dados do chamado: número da OS, equipamento, setor, falha e descrição do problema.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">📱</div>
+      <div class="step-content">
+        <h3>Clique em "Abrir OS no Celular"</h3>
+        <p>O botão verde no e-mail abre a OS diretamente no celular com todos os dados preenchidos. Você também pode acessar pelo link abaixo do botão.</p>
+        <div class="tip">💡 Ou acesse diretamente:<br/>
+          <div class="url-box">manutencaoclinica.vercel.app/os/?os=MC-2603-0001</div>
+          Substitua o número pelo da OS desejada.
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">🔨</div>
+      <div class="step-content">
+        <h3>Execute o serviço</h3>
+        <p>Realize a manutenção no equipamento. Após concluir, preencha o campo <strong>"Serviço Executado"</strong> descrevendo o que foi feito e as peças substituídas.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">✍️</div>
+      <div class="step-content">
+        <h3>Colete as assinaturas</h3>
+        <p>O <strong>técnico responsável</strong> assina primeiro, depois o <strong>responsável do setor solicitante</strong> assina confirmando o serviço. Ambos devem assinar com o dedo diretamente na tela do celular.</p>
+        <div class="tip">💡 Se errar a assinatura, clique em "Limpar" e assine novamente.</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">✅</div>
+      <div class="step-content">
+        <h3>Clique em "Finalizar e Arquivar OS"</h3>
+        <p>O relatório completo será enviado para o e-mail de arquivamento e a OS ficará registrada no sistema com status <span class="badge green">finalizado</span>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESPONSÁVEL ARQUIVAMENTO -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div>
+        <h2>Arquivamento e Relatório</h2>
+        <span class="who">📊 Quem usa: Responsável de Arquivamento</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">📧</div>
+      <div class="step-content">
+        <h3>Receba o relatório</h3>
+        <p>Após a finalização, um e-mail completo chegará em <strong>relatoriosmanutclinica@gmail.com</strong> com todos os dados da OS: solicitante, equipamento, problema, serviço executado e assinaturas.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">🖨️</div>
+      <div class="step-content">
+        <h3>Imprima se necessário</h3>
+        <p>O e-mail de relatório é formatado para impressão. Use <strong>Ctrl+P</strong> ou a opção "Imprimir" do Gmail para gerar uma cópia física da OS.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">📊</div>
+      <div class="step-content">
+        <h3>Consulte o histórico no Firebase</h3>
+        <p>Todos os chamados ficam registrados no Firebase Firestore para consulta e geração de métricas futuras.</p>
+        <div class="tip">💡 Acesse em: <strong>console.firebase.google.com</strong> → projeto manutencao-clinica-fsnh → Firestore</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DICAS GERAIS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">💡</div>
+      <div>
+        <h2>Dicas e Informações</h2>
+        <span class="who">Para todos os usuários</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-icon">🌐</div>
+      <div class="step-content">
+        <h3>Acesse pelo navegador</h3>
+        <p>O sistema funciona em qualquer celular ou computador com acesso à internet, sem necessidade de instalar aplicativo.</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">🔢</div>
+      <div class="step-content">
+        <h3>Entendendo o número da OS</h3>
+        <p>O número segue o padrão <strong>MC-AAMM-0000</strong>:<br/>
+        MC = Manutenção Clínica | AA = ano | MM = mês | 0000 = sequência</p>
+        <div class="tip">💡 Exemplo: MC-2603-0042 = 42º chamado de março de 2026</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">🔗</div>
+      <div class="step-content">
+        <h3>Acessar OS diretamente</h3>
+        <p>Para abrir uma OS específica, acesse a URL com o número:</p>
+        <div class="url-box">manutencaoclinica.vercel.app/os/?os=MC-2603-0001</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-icon">📶</div>
+      <div class="step-content">
+        <h3>Precisa de internet</h3>
+        <p>O sistema requer conexão com a internet para enviar e-mails e salvar no banco de dados. Use o Wi-Fi do hospital.</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-print" onclick="window.print()">🖨️ Imprimir Manual</button>
+
+</main>
+</body>
+</html>

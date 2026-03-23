@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
+  <link rel="shortcut icon" href="../src/assets/favicon.ico" type="image/x-icon">
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <link rel="icon" type="image/jpeg" href="../src/assets/favicon.ico"/>
-  <title>Ordem de Serviço — Manutenção Clínica FSNH</title>
+  <title>Ordem de Serviço — Manutenção Clínica FSPNH</title>
   <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -162,7 +162,7 @@
     <button class="btn btn-s" onclick="finalizar()">✅ Finalizar e Arquivar OS</button>
   </div>
 
-  <!-- SUCESSO -->
+  <!-- SUCESSO (após finalizar na mesma sessão) -->
   <div class="card hidden" id="card-ok">
     <div id="success">
       <div class="icon">✅</div>
@@ -175,7 +175,67 @@
       </a>
     </div>
   </div>
+
+  <!-- VISUALIZAÇÃO (OS já finalizada — somente leitura) -->
+  <div class="card hidden" id="card-view">
+    <div class="num-box"><small>Ordem de Serviço — Finalizada</small><span id="view-num">—</span></div>
+
+    <div style="background:#dcfce7;border-left:4px solid #22c55e;border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">✅</span>
+      <div>
+        <p style="font-weight:700;color:#166534;font-size:14px">OS Finalizada</p>
+        <p style="color:#166534;font-size:12px">Finalizada em: <span id="view-datafim">—</span></p>
+      </div>
+    </div>
+
+    <div class="ctitle"><span>🏥</span> Solicitação</div>
+    <div class="grid">
+      <div class="field"><div class="lbl">Solicitante</div><div class="val" id="view-sol">—</div></div>
+      <div class="field"><div class="lbl">Setor</div><div class="val" id="view-set">—</div></div>
+      <div class="field"><div class="lbl">Leito / Quarto</div><div class="val" id="view-lei">—</div></div>
+      <div class="field"><div class="lbl">Data Abertura</div><div class="val" id="view-dt">—</div></div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="ctitle"><span>🔧</span> Equipamento</div>
+    <div class="grid">
+      <div class="field"><div class="lbl">Equipamento</div><div class="val" id="view-eq">—</div></div>
+      <div class="field"><div class="lbl">Marca / Modelo</div><div class="val" id="view-mar">—</div></div>
+      <div class="field full"><div class="lbl">Falha</div><div class="val" id="view-fal">—</div></div>
+      <div class="field full"><div class="lbl">Descrição do Problema</div><div class="val" id="view-desc">—</div></div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="ctitle"><span>✅</span> Serviço Executado</div>
+    <div class="field full" style="margin-bottom:16px"><div class="val" id="view-obs" style="background:#dcfce7;border-color:#86efac">—</div></div>
+
+    <div class="ctitle"><span>👤</span> Responsáveis</div>
+    <div class="grid" style="margin-bottom:20px">
+      <div class="field"><div class="lbl">Técnico</div><div class="val" id="view-tec">—</div></div>
+      <div class="field"><div class="lbl">Resp. do Setor</div><div class="val" id="view-resp">—</div></div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px" class="no-print">
+      <button onclick="window.print()" style="flex:1;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#1a4a8a,#2d72d2);color:white;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer">
+        🖨️ Imprimir OS
+      </button>
+      <a href="https://manutencaoclinica.vercel.app" style="flex:1;display:flex;align-items:center;justify-content:center;padding:14px;border-radius:10px;background:var(--gray-100);color:var(--gray-600);font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none">
+        ← Nova OS
+      </a>
+    </div>
+  </div>
 </main>
+
+<style>
+  @media print {
+    .no-print { display: none !important; }
+    header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .num-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body::before { display: none; }
+    body { background: white !important; }
+    .card { box-shadow: none; border: 1px solid #e2e8f0; }
+  }
+</style>
 <div id="toast"></div>
 <script>
   const SVC='service_utaq4mc', TPL='template_1z6b5w9', KEY='LRdHG7gjMde2p8TZv';
@@ -183,7 +243,7 @@
   emailjs.init(KEY);
   let osData=null, sigTec=null, sigResp=null;
 
-  function show(id){['card-loading','card-erro','card-os','card-ok'].forEach(c=>document.getElementById(c).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
+  function show(id){['card-loading','card-erro','card-os','card-ok','card-view'].forEach(c=>document.getElementById(c).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});}
 
   window.addEventListener('DOMContentLoaded',()=>{
     const num=new URLSearchParams(window.location.search).get('os');
@@ -193,18 +253,38 @@
         const r=await window.buscarOS(num);
         if(!r){show('card-erro');return;}
         osData=r;
-        document.getElementById('v-sol').textContent=r.solicitante||'—';
-        document.getElementById('v-set').textContent=r.setor||'—';
-        document.getElementById('v-lei').textContent=r.leito||'—';
-        document.getElementById('v-dt').textContent=r.dataHora||'—';
-        document.getElementById('v-eq').textContent=r.equipamento||'—';
-        document.getElementById('v-mar').textContent=r.marca||'—';
-        document.getElementById('v-fal').textContent=r.falha||'—';
-        document.getElementById('v-desc').textContent=r.descricao||'—';
-        document.getElementById('os-num').textContent=r.numero||'—';
-        document.getElementById('ok-num').textContent=r.numero||'—';
-        show('card-os');
-        initSig();
+
+        if(r.status==='finalizado'){
+          // OS já finalizada — modo somente leitura
+          document.getElementById('view-num').textContent=r.numero||'—';
+          document.getElementById('view-datafim').textContent=r.dataFim||'—';
+          document.getElementById('view-sol').textContent=r.solicitante||'—';
+          document.getElementById('view-set').textContent=r.setor||'—';
+          document.getElementById('view-lei').textContent=r.leito||'—';
+          document.getElementById('view-dt').textContent=r.dataHora||'—';
+          document.getElementById('view-eq').textContent=r.equipamento||'—';
+          document.getElementById('view-mar').textContent=r.marca||'—';
+          document.getElementById('view-fal').textContent=r.falha||'—';
+          document.getElementById('view-desc').textContent=r.descricao||'—';
+          document.getElementById('view-obs').textContent=r.obs_tecnico||'—';
+          document.getElementById('view-tec').textContent=r.tecnico_nome||'—';
+          document.getElementById('view-resp').textContent=r.resp_nome||'—';
+          show('card-view');
+        } else {
+          // OS aberta — modo edição/finalização
+          document.getElementById('v-sol').textContent=r.solicitante||'—';
+          document.getElementById('v-set').textContent=r.setor||'—';
+          document.getElementById('v-lei').textContent=r.leito||'—';
+          document.getElementById('v-dt').textContent=r.dataHora||'—';
+          document.getElementById('v-eq').textContent=r.equipamento||'—';
+          document.getElementById('v-mar').textContent=r.marca||'—';
+          document.getElementById('v-fal').textContent=r.falha||'—';
+          document.getElementById('v-desc').textContent=r.descricao||'—';
+          document.getElementById('os-num').textContent=r.numero||'—';
+          document.getElementById('ok-num').textContent=r.numero||'—';
+          show('card-os');
+          initSig();
+        }
       }catch(e){show('card-erro');}
     },900);
   });
@@ -222,12 +302,24 @@
 
   function limpar(w){(w==='tec'?sigTec:sigResp)?.clear();}
 
+  // Comprime assinatura e retorna base64 sem prefixo (para EmailJS attachment)
   function comprimir(pad){
     const c=document.createElement('canvas');c.width=400;c.height=150;
     const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,400,150);
     const img=new Image();img.src=pad.toDataURL('image/png');ctx.drawImage(img,0,0,400,150);
     return c.toDataURL('image/jpeg',.6);
   }
+
+  // Converte dataURL base64 para Blob
+  function dataURLtoBlob(dataURL){
+    const arr=dataURL.split(','), mime=arr[0].match(/:(.*?);/)[1];
+    const bstr=atob(arr[1]);let n=bstr.length;
+    const u8arr=new Uint8Array(n);
+    while(n--){u8arr[n]=bstr.charCodeAt(n);}
+    return new Blob([u8arr],{type:mime});
+  }
+
+
 
   function vld(fields){
     for(const [id,lbl] of fields){

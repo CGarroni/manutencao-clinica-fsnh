@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
+  <link rel="icon" type="image/jpeg" href="src/assets/favicon.ico"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <link rel="shortcut icon" href="src/assets/favicon.ico" type="image/x-icon">
   <title>Manutenção Clínica — FSNH</title>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -79,7 +79,7 @@
 </head>
 <body>
 <header>
-  <img src="src/assets/logo-fsnh.png" class="hlogo" alt="FSNH"/>
+  <img src="src/assets/logo-fsnh.png" class="hlogo" alt="FSPNH"/>
   <div class="htxt">
     <h1>Manutenção Clínica</h1>
     <p><span class="txt-d">Fundação de Saúde Pública de Novo Hamburgo</span><span class="txt-m">FSNH</span></p>
@@ -102,6 +102,17 @@
       </div>
       <div class="divider"></div>
       <div class="ctitle"><span>🔧</span> Equipamento</div>
+      <!-- BUSCA POR PATRIMÔNIO -->
+      <div class="row full" style="margin-bottom:6px">
+        <div class="fg">
+          <label>Nº Patrimônio</label>
+          <div style="display:flex;gap:8px">
+            <input id="patrimonio" placeholder="Digite o nº e clique em Buscar..." style="flex:1"/>
+            <button onclick="buscarPatrimonio()" style="padding:10px 18px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--blue-mid),var(--blue-light));color:white;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap">🔍 Buscar</button>
+          </div>
+          <div id="pat-msg" style="font-size:12px;margin-top:4px;display:none"></div>
+        </div>
+      </div>
       <div class="row">
         <div class="fg"><label>Equipamento <span class="rs">*</span></label>
           <select id="equip">

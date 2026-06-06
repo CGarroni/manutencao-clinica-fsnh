@@ -1,4 +1,4 @@
-# 🏥 Manutenção Clínica — FSPNH
+# 🏥 Manutenção Clínica — FSNH
 
 Sistema digital de Ordens de Serviço para a equipe de Manutenção Clínica da **Fundação de Saúde Pública de Novo Hamburgo**.
 
@@ -188,4 +188,4 @@ Hospital Municipal de Novo Hamburgo
 
 ## 📄 Licença
 
-Uso interno — FSPNH © 2025
+Uso interno — FSNH © 2025

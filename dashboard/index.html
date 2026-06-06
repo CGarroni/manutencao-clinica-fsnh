@@ -2,224 +2,356 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
-  <link rel="icon" type="image/jpeg" href="../src/assets/favicon.ico"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Manutenção Clínica — FSNH</title>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <title>Dashboard — Manutenção Clínica FSNH</title>
+  <link rel="icon" type="image/jpeg" href="../src/assets/favicon.ico"/>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet"/>
   <script type="module">
-    import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {getFirestore,collection,addDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    const db = getFirestore(initializeApp({
+    import {initializeApp}                                    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {getFirestore,collection,query,orderBy,getDocs}   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {getAuth,onAuthStateChanged,signOut}              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const app  = initializeApp({
       apiKey:"AIzaSyA3FrGpdN7Ja4fyiYjxgjbeqvFCrd-RYOw",
       authDomain:"manutencao-clinica-fsnh.firebaseapp.com",
       projectId:"manutencao-clinica-fsnh",
       storageBucket:"manutencao-clinica-fsnh.firebasestorage.app",
       messagingSenderId:"669634366108",
       appId:"1:669634366108:web:80440c3f2116aeb7b8bb59"
-    }));
-    window.salvarFirebase = async (dados) => {
-      try {
-        const r = await addDoc(collection(db,"chamados"),{...dados,status:"aberto",criadoEm:serverTimestamp()});
-        return r.id;
-      } catch(e) { console.error("Firebase:",e); return null; }
+    });
+    const db   = getFirestore(app);
+    const auth = getAuth(app);
+
+    // ── PROTEÇÃO DA PÁGINA ──────────────────────────────────────
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        location.href = '/auth/login.html?next=/dashboard/';
+      } else {
+        document.getElementById('user-email').textContent = user.email;
+        window.carregarDados();
+      }
+    });
+
+    // ── LOGOUT ─────────────────────────────────────────────────
+    window.fazerLogout = async () => {
+      await signOut(auth);
+      location.href = '/auth/login.html';
+    };
+
+    window.carregarDados = async function(){
+      try{
+        const snap = await getDocs(query(collection(db,"chamados"),orderBy("criadoEm","desc")));
+        const todos = snap.docs.map(d=>({_id:d.id,...d.data()}));
+        window.renderDashboard(todos);
+      }catch(e){
+        console.error(e);
+        document.getElementById('loading').innerHTML='<p style="color:#ef4444;text-align:center;padding:20px">Erro ao carregar dados. Verifique a conexão.</p>';
+      }
     };
   </script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--blue-dark:#0a2342;--blue-mid:#1a4a8a;--blue-light:#2d72d2;--teal:#00b4d8;--gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-400:#94a3b8;--gray-600:#475569;--gray-800:#1e293b;--red:#ef4444;--green:#22c55e}
-    body{font-family:'Barlow',sans-serif;min-height:100vh;color:var(--gray-800);background-color:var(--blue-dark);background-image:url('../src/assets/img-main.jpg');background-size:cover;background-position:center;background-attachment:fixed}
-    body::before{content:'';position:fixed;inset:0;background:linear-gradient(160deg,rgba(10,35,66,.93) 0%,rgba(10,35,66,.80) 50%,rgba(10,35,66,.93) 100%);z-index:0}
-    header,main{position:relative;z-index:1}
-    header{background:linear-gradient(135deg,rgba(10,35,66,.97),rgba(26,74,138,.97));padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:3px solid var(--teal)}
-    .hlogo{width:60px;height:60px;border-radius:50%;object-fit:contain;background:white;padding:4px;border:2px solid var(--teal);flex-shrink:0}
-    .htxt{flex:1;text-align:center}
-    .htxt h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(16px,3.5vw,26px);font-weight:700;color:white;letter-spacing:1px;text-transform:uppercase;line-height:1.1}
-    .htxt p{font-size:11px;color:var(--teal);font-weight:500;letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
-    .badge{flex-shrink:0;background:var(--teal);color:var(--blue-dark);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:1px;white-space:nowrap}
-    main{max-width:680px;margin:24px auto;padding:0 14px 60px}
-    .card{background:rgba(255,255,255,.97);border-radius:12px;padding:26px;box-shadow:0 8px 40px rgba(10,35,66,.35);margin-bottom:16px;border-top:4px solid var(--blue-light)}
-    .ctitle{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;gap:8px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-    .row.full{grid-template-columns:1fr}
-    @media(max-width:520px){.row{grid-template-columns:1fr}}
-    .fg{display:flex;flex-direction:column;gap:4px}
-    label{font-size:11px;font-weight:600;color:var(--gray-600);text-transform:uppercase;letter-spacing:.8px}
-    input,select,textarea{width:100%;padding:10px 13px;border:1.5px solid var(--gray-200);border-radius:8px;font-family:'Barlow',sans-serif;font-size:15px;color:var(--gray-800);background:var(--gray-50);transition:border-color .2s;appearance:none}
-    input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(45,114,210,.12);background:white}
-    select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
-    textarea{resize:vertical;min-height:86px}
-    .btn{display:block;width:100%;padding:14px 24px;border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:8px}
-    .btn-p{background:linear-gradient(135deg,var(--blue-mid),var(--blue-light));color:white;box-shadow:0 4px 16px rgba(26,74,138,.3)}
-    .btn-p:hover{transform:translateY(-2px)}
-    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
-    .num-box{text-align:center;padding:10px;background:linear-gradient(135deg,var(--blue-dark),var(--blue-mid));border-radius:8px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:2px;margin-bottom:20px}
-    .num-box small{display:block;font-size:10px;color:var(--teal);letter-spacing:3px;font-family:'Barlow',sans-serif;font-weight:500;margin-bottom:2px}
-    .divider{height:1px;background:var(--gray-200);margin:16px 0}
-    .step{display:none}.step.active{display:block}
-    #done{text-align:center;padding:40px 20px}
-    #done .icon{font-size:64px;margin-bottom:14px}
-    #done h2{font-family:'Barlow Condensed',sans-serif;font-size:26px;color:var(--blue-dark);margin-bottom:8px}
-    #done p{color:var(--gray-600);font-size:14px;line-height:1.6}
-    #done .num{font-weight:700;color:var(--blue-mid)}
-    #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--gray-800);color:white;padding:12px 22px;border-radius:10px;font-size:14px;z-index:999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;max-width:90vw}
-    #toast.show{transform:translateX(-50%) translateY(0)}
-    #toast.ok{background:#166534}#toast.err{background:#991b1b}
-    .rs{color:var(--red)}
-    .txt-m{display:none}.txt-d{display:inline}
+    :root{
+      --blue-dark:#0a2342;--blue-mid:#1a4a8a;--blue-light:#2d72d2;--teal:#00b4d8;
+      --gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-400:#94a3b8;
+      --gray-600:#475569;--gray-800:#1e293b;--red:#ef4444;--green:#22c55e;--orange:#f97316;
+    }
+    body{font-family:'Barlow',sans-serif;background:var(--gray-100);color:var(--gray-800);min-height:100vh}
+
+    
+
+    /* ── HEADER ── */
+    header{background:linear-gradient(135deg,var(--blue-dark),var(--blue-mid));padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--teal)}
+    .h-left{display:flex;align-items:center;gap:12px}
+    .h-logo{width:46px;height:46px;border-radius:50%;object-fit:contain;background:white;padding:3px;border:2px solid var(--teal)}
+    .h-title h1{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:white;letter-spacing:1px;text-transform:uppercase;line-height:1.1}
+    .h-title p{font-size:10px;color:var(--teal);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+    .h-right{display:flex;align-items:center;gap:12px}
+    .att-info{font-size:11px;color:var(--gray-400);text-align:right}
+    .btn-sair{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:6px 14px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
+    .btn-sair:hover{background:rgba(255,255,255,.2)}
+
+    /* ── MAIN ── */
+    main{max-width:1100px;margin:0 auto;padding:24px 16px 60px}
+
+    /* ── FILTROS ── */
+    .filtros{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+    .filtro-btn{padding:8px 18px;border-radius:20px;border:2px solid var(--gray-200);background:white;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:var(--gray-600);cursor:pointer;transition:all .2s}
+    .filtro-btn.active{background:var(--blue-mid);border-color:var(--blue-mid);color:white}
+    .filtro-btn:hover:not(.active){border-color:var(--blue-light);color:var(--blue-light)}
+    .search-input{padding:8px 16px;border:1.5px solid var(--gray-200);border-radius:20px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--gray-800);background:white;width:220px;transition:border-color .2s}
+    .search-input:focus{outline:none;border-color:var(--blue-light)}
+
+    /* ── CARDS RESUMO ── */
+    .resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+    .resumo-card{background:white;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(10,35,66,.06);border-top:4px solid var(--blue-light);text-align:center}
+    .resumo-card.aberto{border-top-color:var(--orange)}
+    .resumo-card.finalizado{border-top-color:var(--green)}
+    .resumo-card.equip{border-top-color:var(--teal)}
+    .resumo-num{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:700;color:var(--blue-dark);line-height:1}
+    .resumo-card.aberto .resumo-num{color:var(--orange)}
+    .resumo-card.finalizado .resumo-num{color:#16a34a}
+    .resumo-label{font-size:12px;color:var(--gray-600);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-top:6px}
+
+    /* ── TOP EQUIPAMENTOS ── */
+    .top-section{background:white;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(10,35,66,.06);margin-bottom:24px}
+    .section-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--blue-mid);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .top-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:8px;background:var(--gray-50);margin-bottom:6px}
+    .top-name{font-size:14px;font-weight:500;color:var(--gray-800)}
+    .top-count{font-size:12px;font-weight:700;color:var(--blue-light);background:var(--gray-100);padding:3px 10px;border-radius:12px}
+
+    /* ── LISTA OS ── */
+    .lista-section{background:white;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(10,35,66,.06)}
+    .os-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:14px}
+    .os-card{border:1.5px solid var(--gray-200);border-radius:10px;padding:16px;transition:all .2s;background:var(--gray-50)}
+    .os-card:hover{border-color:var(--blue-light);box-shadow:0 4px 16px rgba(45,114,210,.12);background:white}
+    .os-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .os-numero{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--blue-dark)}
+    .os-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:.5px}
+    .badge-aberto{background:#ffedd5;color:#9a3412}
+    .badge-finalizado{background:#dcfce7;color:#166534}
+    .os-row{display:flex;gap:6px;margin-bottom:5px;font-size:13px}
+    .os-lbl{color:var(--gray-400);font-weight:600;min-width:85px;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+    .os-val{color:var(--gray-800)}
+    .os-desc{font-size:12px;color:var(--gray-600);background:var(--gray-100);border-radius:6px;padding:6px 8px;margin:8px 0;line-height:1.4;border-left:3px solid var(--gray-200)}
+    .os-link{display:block;text-align:center;margin-top:12px;padding:8px;border-radius:8px;background:linear-gradient(135deg,var(--blue-mid),var(--blue-light));color:white;text-decoration:none;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s}
+    .os-link:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,74,138,.3)}
+    .os-link.finalizado{background:linear-gradient(135deg,#475569,#64748b)}
+    .empty{text-align:center;padding:40px 20px;color:var(--gray-400);font-size:14px}
+    .hidden{display:none}
+    #loading{text-align:center;padding:60px 20px;color:var(--gray-600);font-size:15px}
+
+    /* ── RELATÓRIO ── */
+    .rel-wrapper{position:relative;display:inline-block}
+    .btn-rel{padding:8px 18px;border-radius:20px;border:2px solid #16a34a;background:white;font-family:'Barlow',sans-serif;font-size:13px;font-weight:600;color:#16a34a;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+    .btn-rel:hover{background:#16a34a;color:white}
+    .rel-dropdown{position:absolute;top:calc(100% + 6px);left:0;background:white;border-radius:10px;box-shadow:0 8px 24px rgba(10,35,66,.15);border:1px solid var(--gray-200);min-width:200px;z-index:100;display:none}
+    .rel-dropdown.open{display:block}
+    .rel-option{padding:12px 16px;font-size:13px;font-weight:600;color:var(--gray-800);cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s}
+    .rel-option:hover{background:var(--gray-50)}
+    .rel-option:first-child{border-radius:10px 10px 0 0}
+    .rel-option:last-child{border-radius:0 0 10px 10px;border-top:1px solid var(--gray-200)}
     @media(max-width:600px){
-      .txt-m{display:inline}.txt-d{display:none}
-      header{padding:10px 14px}
-      .hlogo{width:44px;height:44px}
-      .htxt h1{font-size:15px}
-      .htxt p{font-size:9px}
-      .badge{font-size:9px;padding:4px 8px}
+      .resumo{grid-template-columns:1fr 1fr}
+      .h-title p{display:none}
+      .search-input{width:100%}
+      .filtros{gap:8px}
     }
   </style>
 </head>
 <body>
-<header>
-  <img src="../src/assets/logo-fsnh.png" class="hlogo" alt="FSPNH"/>
-  <div class="htxt">
-    <h1>Manutenção Clínica</h1>
-    <p><span class="txt-d">Fundação de Saúde Pública de Novo Hamburgo</span><span class="txt-m">FSNH</span></p>
-  </div>
-  <div class="badge" id="hnum">Nova OS</div>
-</header>
-<main>
-  <!-- STEP 1: FORMULÁRIO -->
-  <div class="step active" id="s1">
-    <div class="card">
-      <div class="num-box"><small>Nº do Chamado</small><span id="num">—</span></div>
-      <div class="ctitle"><span>🏥</span> Identificação</div>
-      <div class="row">
-        <div class="fg"><label>Solicitante <span class="rs">*</span></label><input id="solicitante" placeholder="Seu Nome"/></div>
-        <div class="fg"><label>Setor <span class="rs">*</span></label><input id="setor" placeholder="Ex: UTI, PS..."/></div>
-      </div>
-      <div class="row">
-        <div class="fg"><label>Leito / Quarto</label><input id="leito" placeholder="Ex: 12A..."/></div>
-        <div class="fg"><label>Data / Hora</label><input id="dt" readonly/></div>
-      </div>
-      <div class="divider"></div>
-      <div class="ctitle"><span>🔧</span> Equipamento</div>
-      <!-- BUSCA POR PATRIMÔNIO -->
-      <div class="row full" style="margin-bottom:6px">
-        <div class="fg">
-          <label>Nº Patrimônio</label>
-          <div style="display:flex;gap:8px">
-            <input id="patrimonio" placeholder="Digite o nº e clique em Buscar..." style="flex:1"/>
-            <button onclick="buscarPatrimonio()" style="padding:10px 18px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--blue-mid),var(--blue-light));color:white;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap">🔍 Buscar</button>
-          </div>
-          <div id="pat-msg" style="font-size:12px;margin-top:4px;display:none"></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="fg"><label>Equipamento <span class="rs">*</span></label>
-          <select id="equip">
-            <option value="">Selecione...</option>
-            <option>Monitor</option><option>Cama</option><option>Oxímetro de Transporte</option>
-            <option>ECG</option><option>Eletro</option><option>Lâmina de Laringoscópio</option>
-            <option>Respirador</option><option>MAP</option><option>Berço</option>
-            <option>Parede de Gases</option><option>Outros</option>
-          </select>
-        </div>
-        <div class="fg"><label>Marca / Modelo</label><input id="marca" placeholder="Ex: Philips MX800..."/></div>
-      </div>
-      <div class="row full">
-        <div class="fg"><label>Falha Identificada <span class="rs">*</span></label>
-          <select id="falha"><option value="">Selecione...</option><option>Falha</option><option>Não Liga</option><option>Quebrado</option></select>
-        </div>
-      </div>
-      <div class="row full">
-        <div class="fg"><label>Descrição do Problema <span class="rs">*</span></label>
-          <textarea id="desc" placeholder="Descreva detalhadamente o problema..."></textarea>
-        </div>
-      </div>
-      <button class="btn btn-p" onclick="enviar()">📨 Enviar para Manutenção Clínica</button>
-    </div>
-  </div>
-  <!-- STEP 2: CONFIRMAÇÃO -->
-  <div class="step" id="s2">
-    <div class="card">
-      <div id="done">
-        <div class="icon">✅</div>
-        <h2>Chamado Enviado!</h2>
-        <p>A OS <span class="num" id="done-num"></span> foi enviada para a Manutenção Clínica.<br/>
-        O técnico receberá o e-mail com o link para finalização.</p>
-        <br/>
-        <button class="btn btn-p" onclick="location.reload()" style="max-width:260px;margin:0 auto">+ Nova OS</button>
-      </div>
-    </div>
-  </div>
-</main>
-<div id="toast"></div>
-<script>
-  const SVC='service_utaq4mc', TPL='template_7kxq2w1', KEY='LRdHG7gjMde2p8TZv';
-  emailjs.init(KEY);
-  let osNum='';
 
-  function getNum(){
-    const now=new Date();
-    const ym=now.getFullYear().toString().slice(-2)+String(now.getMonth()+1).padStart(2,'0');
-    const k='mc_cnt';
-    const d=JSON.parse(localStorage.getItem(k)||'{"ym":"","seq":0}');
-    const seq=d.ym===ym?d.seq+1:1;
-    localStorage.setItem(k,JSON.stringify({ym,seq}));
-    return 'MC-'+ym+'-'+String(seq).padStart(4,'0');
+<!-- ── DASHBOARD ── -->
+<div id="dashboard-screen">
+  <header>
+    <div class="h-left">
+      <img src="../src/assets/logo-fsnh.png" class="h-logo" alt="FSPNH"/>
+      <div class="h-title">
+        <h1>Dashboard</h1>
+        <p>Manutenção Clínica — FSNH</p>
+      </div>
+    </div>
+    <div class="h-right">
+      <div class="att-info">Atualizado às<br/><span id="ultima-att">—</span></div>
+      <span id="user-email" style="font-size:11px;color:#94a3b8;margin-right:8px"></span>
+      <button class="btn-sair" onclick="window.fazerLogout()">Sair</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="loading">⏳ Carregando dados...</div>
+
+    <div id="content" class="hidden">
+      <!-- RESUMO -->
+      <div class="resumo">
+        <div class="resumo-card">
+          <div class="resumo-num" id="cnt-total">0</div>
+          <div class="resumo-label">📋 Total de OS</div>
+        </div>
+        <div class="resumo-card aberto">
+          <div class="resumo-num" id="cnt-abertos">0</div>
+          <div class="resumo-label">⏳ Em Aberto</div>
+        </div>
+        <div class="resumo-card finalizado">
+          <div class="resumo-num" id="cnt-fechados">0</div>
+          <div class="resumo-label">✅ Finalizadas</div>
+        </div>
+        <div class="resumo-card equip">
+          <div class="resumo-num" id="cnt-equip">0</div>
+          <div class="resumo-label">🔧 Equipamentos</div>
+        </div>
+      </div>
+
+      <!-- TOP EQUIPAMENTOS -->
+      <div class="top-section">
+        <div class="section-title">🏆 Equipamentos Mais Chamados</div>
+        <div id="top-equip"></div>
+      </div>
+
+      <!-- FILTROS + BUSCA -->
+      <div class="filtros">
+        <button class="filtro-btn active" onclick="filtrar('todos',this)">Todos</button>
+        <button class="filtro-btn" onclick="filtrar('aberto',this)">⏳ Em Aberto</button>
+        <button class="filtro-btn" onclick="filtrar('finalizado',this)">✅ Finalizados</button>
+        <div class="rel-wrapper" id="rel-wrapper">
+          <button class="btn-rel" onclick="toggleRelDropdown()">
+            📊 Relatório ▾
+          </button>
+          <div class="rel-dropdown" id="rel-dropdown">
+            <div class="rel-option" onclick="exportarCSV('aberto')">⏳ OS Em Aberto</div>
+            <div class="rel-option" onclick="exportarCSV('finalizado')">✅ OS Finalizadas</div>
+          </div>
+        </div>
+        <input class="search-input" id="busca" placeholder="🔍 Buscar por setor, OS, equipamento..." oninput="filtrar(filtroAtivo,null)"/>
+      </div>
+
+      <!-- LISTA -->
+      <div class="lista-section">
+        <div class="section-title">📋 Ordens de Serviço</div>
+        <div class="os-grid" id="lista-os"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  let todosOS = [];
+  let filtroAtivo = 'todos';
+
+  // ── RENDER DASHBOARD ──────────────────────────────────────────
+  window.renderDashboard = function(dados){
+    todosOS = dados;
+
+    const abertos     = dados.filter(o=>o.status==='aberto');
+    const finalizados = dados.filter(o=>o.status==='finalizado');
+
+    // Contadores
+    document.getElementById('cnt-total').textContent    = dados.length;
+    document.getElementById('cnt-abertos').textContent  = abertos.length;
+    document.getElementById('cnt-fechados').textContent = finalizados.length;
+
+    // Equipamentos únicos
+    const equips = [...new Set(dados.map(o=>o.equipamento).filter(Boolean))];
+    document.getElementById('cnt-equip').textContent = equips.length;
+
+    // Top equipamentos
+    const equipCount={};
+    dados.forEach(o=>{ if(o.equipamento) equipCount[o.equipamento]=(equipCount[o.equipamento]||0)+1; });
+    const top=Object.entries(equipCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    document.getElementById('top-equip').innerHTML = top.length
+      ? top.map(([e,n],i)=>`
+          <div class="top-item">
+            <span class="top-name">${i+1}. ${e}</span>
+            <span class="top-count">${n} chamado${n>1?'s':''}</span>
+          </div>`).join('')
+      : '<p style="color:#94a3b8;font-size:13px">Nenhum dado ainda.</p>';
+
+    // Hora da última atualização
+    document.getElementById('ultima-att').textContent =
+      new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('content').classList.remove('hidden');
+
+    renderLista(dados);
+  };
+
+  // ── FILTRAR ───────────────────────────────────────────────────
+  function filtrar(status, btn){
+    if(btn){
+      filtroAtivo = status;
+      document.querySelectorAll('.filtro-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const busca = document.getElementById('busca').value.toLowerCase().trim();
+    let lista = filtroAtivo==='todos' ? todosOS : todosOS.filter(o=>o.status===filtroAtivo);
+    if(busca){
+      lista = lista.filter(o=>
+        (o.numero||'').toLowerCase().includes(busca) ||
+        (o.setor||'').toLowerCase().includes(busca) ||
+        (o.equipamento||'').toLowerCase().includes(busca) ||
+        (o.solicitante||'').toLowerCase().includes(busca) ||
+        (o.descricao||'').toLowerCase().includes(busca)
+      );
+    }
+    renderLista(lista);
   }
 
-  window.addEventListener('DOMContentLoaded',()=>{
-    const now=new Date();
-    document.getElementById('dt').value=now.toLocaleDateString('pt-BR')+' '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    osNum=getNum();
-    document.getElementById('num').textContent=osNum;
-    document.getElementById('hnum').textContent=window.innerWidth<=600?'MC-'+osNum.split('-')[2]:osNum;
-    document.getElementById('done-num').textContent=osNum;
+  // ── DROPDOWN RELATÓRIO ───────────────────────────────────────
+  function toggleRelDropdown(){
+    const dd = document.getElementById('rel-dropdown');
+    dd.classList.toggle('open');
+  }
+  // Fecha dropdown ao clicar fora
+  document.addEventListener('click', e => {
+    if(!document.getElementById('rel-wrapper').contains(e.target)){
+      document.getElementById('rel-dropdown').classList.remove('open');
+    }
   });
 
-  function v(fields){
-    for(const [id,lbl] of fields){
-      const el=document.getElementById(id);
-      if(!el||!el.value.trim()){toast('Preencha: '+lbl,'err');el?.focus();return false;}
+  // ── EXPORTAR CSV ──────────────────────────────────────────────
+  function exportarCSV(status){
+    document.getElementById('rel-dropdown').classList.remove('open');
+    const lista = todosOS.filter(o=>o.status===status);
+    if(!lista.length){
+      alert('Nenhuma OS ' + (status==='aberto'?'em aberto':'finalizada') + ' encontrada.');
+      return;
     }
-    return true;
+    const cabecalho = ['Número','Data Abertura','Solicitante','Setor','Leito/Quarto','Equipamento','Marca/Modelo','Falha','Descrição','Técnico','Resp. Setor','Serviço Executado','Data Finalização','Status'];
+    const linhas = lista.map(o=>[
+      o.numero||'',
+      o.dataHora||'',
+      o.solicitante||'',
+      o.setor||'',
+      o.leito||'',
+      o.equipamento||'',
+      o.marca||'',
+      o.falha||'',
+      (o.descricao||'').replace(/,/g,';'),
+      o.tecnico_nome||'',
+      o.resp_nome||'',
+      (o.obs_tecnico||'').replace(/,/g,';'),
+      o.dataFim||'',
+      o.status||''
+    ].map(v=>`"${v}"`).join(','));
+
+    const csv = '﻿' + [cabecalho.join(','), ...linhas].join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    const data = new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
+    a.href     = url;
+    a.download = `OS_${status==='aberto'?'Abertas':'Finalizadas'}_${data}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
-  async function enviar(){
-    if(!v([['solicitante','Solicitante'],['setor','Setor'],['equip','Equipamento'],['falha','Falha'],['desc','Descrição']]))return;
-    const btn=document.querySelector('#s1 .btn');
-    btn.disabled=true;btn.textContent='⏳ Enviando...';
-    const dados={
-      numero:osNum,
-      dataHora:document.getElementById('dt').value,
-      solicitante:document.getElementById('solicitante').value.trim(),
-      setor:document.getElementById('setor').value.trim(),
-      leito:document.getElementById('leito').value.trim()||'—',
-      equipamento:document.getElementById('equip').value,
-      marca:document.getElementById('marca').value.trim()||'—',
-      falha:document.getElementById('falha').value,
-      descricao:document.getElementById('desc').value.trim(),
-      link_os:'https://manutencaoclinica.vercel.app/os/?os='+osNum,
-    };
-    try{
-      await emailjs.send(SVC,TPL,dados);
-      await window.salvarFirebase(dados);
-      toast('✅ OS enviada para Manutenção!','ok');
-      document.getElementById('s1').classList.remove('active');
-      document.getElementById('s2').classList.add('active');
-      window.scrollTo({top:0,behavior:'smooth'});
-    }catch(e){
-      const m=e?.text||e?.message||JSON.stringify(e);
-      toast('Erro: '+m,'err');
-      alert('Erro:\n'+m);
-      btn.disabled=false;btn.textContent='📨 Enviar para Manutenção Clínica';
+  // ── RENDERIZAR LISTA ─────────────────────────────────────────
+  function renderLista(lista){
+    const el = document.getElementById('lista-os');
+    if(!lista.length){
+      el.innerHTML='<div class="empty" style="grid-column:1/-1">Nenhuma OS encontrada.</div>';
+      return;
     }
-  }
-
-  function toast(msg,t=''){
-    const el=document.getElementById('toast');
-    el.textContent=msg;el.className='show '+t;
-    setTimeout(()=>el.className='',3200);
+    el.innerHTML = lista.map(o=>`
+      <div class="os-card">
+        <div class="os-card-header">
+          <span class="os-numero">${o.numero||'—'}</span>
+          <span class="os-badge ${o.status==='aberto'?'badge-aberto':'badge-finalizado'}">
+            ${o.status==='aberto'?'⏳ Aberto':'✅ Finalizado'}
+          </span>
+        </div>
+        <div class="os-row"><span class="os-lbl">Setor</span><span class="os-val">${o.setor||'—'}</span></div>
+        <div class="os-row"><span class="os-lbl">Equipamento</span><span class="os-val">${o.equipamento||'—'}</span></div>
+        <div class="os-row"><span class="os-lbl">Falha</span><span class="os-val">${o.falha||'—'}</span></div>
+        <div class="os-row"><span class="os-lbl">Solicitante</span><span class="os-val">${o.solicitante||'—'}</span></div>
+        <div class="os-row"><span class="os-lbl">Abertura</span><span class="os-val">${o.dataHora||'—'}</span></div>
+        ${o.status==='finalizado'?`<div class="os-row"><span class="os-lbl">Finalizado</span><span class="os-val">${o.dataFim||'—'}</span></div>`:''}
+        <div class="os-desc">${(o.descricao||'—').substring(0,100)}${(o.descricao||'').length>100?'...':''}</div>
+        <a href="/os/?os=${o.numero}" class="os-link ${o.status==='finalizado'?'finalizado':''}">
+          ${o.status==='aberto'?'🔧 Abrir para Finalizar':'👁️ Visualizar OS'}
+        </a>
+      </div>`).join('');
   }
 </script>
 </body>

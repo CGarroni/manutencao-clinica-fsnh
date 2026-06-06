@@ -28,7 +28,7 @@
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--blue-dark:#0a2342;--blue-mid:#1a4a8a;--blue-light:#2d72d2;--teal:#00b4d8;--gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-400:#94a3b8;--gray-600:#475569;--gray-800:#1e293b;--red:#ef4444;--green:#22c55e}
-    body{font-family:'Barlow',sans-serif;min-height:100vh;color:var(--gray-800);background-color:var(--blue-dark);background-image:url('../src/assets/img-main.jpg');background-size:cover;background-position:center;background-attachment:fixed}
+    body{font-family:'Barlow',sans-serif;min-height:100vh;color:var(--gray-800);background-color:var(--blue-dark);background-image:url('src/assets/logo-fsnh.png');background-size:cover;background-position:center;background-attachment:fixed}
     body::before{content:'';position:fixed;inset:0;background:linear-gradient(160deg,rgba(10,35,66,.93) 0%,rgba(10,35,66,.80) 50%,rgba(10,35,66,.93) 100%);z-index:0}
     header,main{position:relative;z-index:1}
     header{background:linear-gradient(135deg,rgba(10,35,66,.97),rgba(26,74,138,.97));padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:3px solid var(--teal)}
@@ -79,7 +79,7 @@
 </head>
 <body>
 <header>
-  <img src="src/assets/logo-fsnh.png" class="hlogo" alt="FSNH"/>
+  <img src="src/assets/logo.jpg" class="hlogo" alt="FSPNH"/>
   <div class="htxt">
     <h1>Manutenção Clínica</h1>
     <p><span class="txt-d">Fundação de Saúde Pública de Novo Hamburgo</span><span class="txt-m">FSNH</span></p>
@@ -158,23 +158,12 @@
   emailjs.init(KEY);
   let osNum='';
 
-  function getNum(){
-    const now=new Date();
-    const ym=now.getFullYear().toString().slice(-2)+String(now.getMonth()+1).padStart(2,'0');
-    const k='mc_cnt';
-    const d=JSON.parse(localStorage.getItem(k)||'{"ym":"","seq":0}');
-    const seq=d.ym===ym?d.seq+1:1;
-    localStorage.setItem(k,JSON.stringify({ym,seq}));
-    return 'MC-'+ym+'-'+String(seq).padStart(4,'0');
-  }
-
   window.addEventListener('DOMContentLoaded',()=>{
     const now=new Date();
     document.getElementById('dt').value=now.toLocaleDateString('pt-BR')+' '+now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    osNum=getNum();
-    document.getElementById('num').textContent=osNum;
-    document.getElementById('hnum').textContent=window.innerWidth<=600?'MC-'+osNum.split('-')[2]:osNum;
-    document.getElementById('done-num').textContent=osNum;
+    // Número gerado apenas no envio — não incrementa ao carregar
+    document.getElementById('num').textContent='—';
+    document.getElementById('hnum').textContent='Nova OS';
   });
 
   function v(fields){
@@ -188,13 +177,33 @@
   async function enviar(){
     if(!v([['solicitante','Solicitante'],['setor','Setor'],['equip','Equipamento'],['falha','Falha'],['desc','Descrição']]))return;
     const btn=document.querySelector('#s1 .btn');
-    btn.disabled=true;btn.textContent='⏳ Enviando...';
+    btn.disabled=true; btn.textContent='⏳ Gerando OS...';
+
+    // Gera número AGORA — somente no momento do envio
+    try{
+      osNum = await window.getNextNumOS();
+    }catch(e){
+      // Fallback local se Firebase falhar
+      const now=new Date();
+      const ym=now.getFullYear().toString().slice(-2)+String(now.getMonth()+1).padStart(2,'0');
+      const k='mc_cnt_fb';
+      const d=JSON.parse(localStorage.getItem(k)||'{"ym":"","seq":0}');
+      const seq=d.ym===ym?d.seq+1:1;
+      localStorage.setItem(k,JSON.stringify({ym,seq}));
+      osNum='MC-'+ym+'-'+String(seq).padStart(4,'0');
+    }
+    document.getElementById('num').textContent=osNum;
+    document.getElementById('hnum').textContent=window.innerWidth<=600?'MC-'+osNum.split('-')[2]:osNum;
+    document.getElementById('done-num').textContent=osNum;
+    btn.textContent='⏳ Enviando...';
+
     const dados={
       numero:osNum,
       dataHora:document.getElementById('dt').value,
       solicitante:document.getElementById('solicitante').value.trim(),
       setor:document.getElementById('setor').value.trim(),
       leito:document.getElementById('leito').value.trim()||'—',
+      patrimonio:document.getElementById('patrimonio').value.trim()||'—',
       equipamento:document.getElementById('equip').value,
       marca:document.getElementById('marca').value.trim()||'—',
       falha:document.getElementById('falha').value,

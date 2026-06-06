@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Login — Manutenção Clínica FSNH</title>
+  <link rel="icon" type="image/jpeg" href="../src/assets/favicon.ico"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <script type="module">
+    import {initializeApp}           from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {getAuth,signInWithEmailAndPassword,onAuthStateChanged}
+                                       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const app  = initializeApp({
+      apiKey:"AIzaSyA3FrGpdN7Ja4fyiYjxgjbeqvFCrd-RYOw",
+      authDomain:"manutencao-clinica-fsnh.firebaseapp.com",
+      projectId:"manutencao-clinica-fsnh",
+      storageBucket:"manutencao-clinica-fsnh.firebasestorage.app",
+      messagingSenderId:"669634366108",
+      appId:"1:669634366108:web:80440c3f2116aeb7b8bb59"
+    });
+    const auth = getAuth(app);
+
+    // Se já está logado, redireciona direto
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        const dest = new URLSearchParams(location.search).get('next') || '/dashboard/';
+        location.href = dest;
+      }
+    });
+
+    window.fazerLogin = async () => {
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+      const erro  = document.getElementById('erro');
+      const btn   = document.getElementById('btn-login');
+      erro.textContent = '';
+      if (!email || !senha) { erro.textContent = 'Preencha e-mail e senha.'; return; }
+      btn.disabled = true; btn.textContent = '⏳ Entrando...';
+      try {
+        await signInWithEmailAndPassword(auth, email, senha);
+        // onAuthStateChanged cuida do redirect
+      } catch(e) {
+        const msgs = {
+          'auth/user-not-found':   'Usuário não encontrado.',
+          'auth/wrong-password':   'Senha incorreta.',
+          'auth/invalid-email':    'E-mail inválido.',
+          'auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos.',
+          'auth/invalid-credential':'E-mail ou senha incorretos.',
+        };
+        erro.textContent = msgs[e.code] || 'Erro ao entrar. Tente novamente.';
+        btn.disabled = false; btn.textContent = 'Entrar';
+      }
+    };
+  </script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Barlow',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a2342,#1a4a8a);padding:20px}
+    .card{background:white;border-radius:16px;padding:44px 36px;width:100%;max-width:400px;box-shadow:0 24px 64px rgba(10,35,66,.45);text-align:center}
+    .logo{width:80px;height:80px;border-radius:50%;border:3px solid #00b4d8;padding:5px;margin-bottom:18px;object-fit:contain}
+    h1{font-family:'Barlow Condensed',sans-serif;font-size:24px;color:#0a2342;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+    .sub{font-size:13px;color:#64748b;margin-bottom:28px}
+    .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;text-align:left}
+    label{font-size:11px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.8px}
+    input{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'Barlow',sans-serif;font-size:15px;color:#1e293b;background:#f8fafc;transition:border-color .2s}
+    input:focus{outline:none;border-color:#2d72d2;box-shadow:0 0 0 3px rgba(45,114,210,.12);background:white}
+    .btn{width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#1a4a8a,#2d72d2);color:white;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;margin-top:6px}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(26,74,138,.3)}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .erro{color:#ef4444;font-size:13px;margin-top:10px;min-height:20px;font-weight:500}
+    .link-publico{margin-top:20px;font-size:13px;color:#64748b}
+    .link-publico a{color:#2d72d2;text-decoration:none;font-weight:600}
+    .link-publico a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="../src/assets/logo-fsnh.png" class="logo" alt="FSNH"/>
+    <h1>Manutenção Clínica</h1>
+    <p class="sub">Acesso restrito — Equipe técnica FSNH</p>
+    <div class="fg">
+      <label>E-mail</label>
+      <input type="email" id="email" placeholder="seu@email.com"
+             onkeydown="if(event.key==='Enter')document.getElementById('senha').focus()"/>
+    </div>
+    <div class="fg">
+      <label>Senha</label>
+      <input type="password" id="senha" placeholder="••••••••"
+             onkeydown="if(event.key==='Enter')window.fazerLogin()"/>
+    </div>
+    <button class="btn" id="btn-login" onclick="window.fazerLogin()">Entrar</button>
+    <p class="erro" id="erro"></p>
+    <div class="link-publico">
+      Precisa abrir um chamado?
+      <a href="/">Clique aqui</a>
+    </div>
+  </div>
+</body>
+</html>

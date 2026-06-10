@@ -38,7 +38,7 @@ manutencao-clinica-fsnh/
 │   │   └── firebase.js         # Integração com Firebase Firestore
 │   │
 │   └── assets/
-│       ├── logo.jpg            # Logo FSPNH
+│       ├── logo.jpg            # Logo FSNH
 │       └── hospital.jpg        # Foto do Hospital Municipal
 │
 ├── docs/
@@ -181,7 +181,7 @@ Após o deploy, qualquer dispositivo pode acessar via:
 
 ## 👤 Desenvolvido para
 
-**Fundação de Saúde Pública de Novo Hamburgo — FSPNH**
+**Fundação de Saúde Pública de Novo Hamburgo — FSNH**
 Hospital Municipal de Novo Hamburgo
 
 ---

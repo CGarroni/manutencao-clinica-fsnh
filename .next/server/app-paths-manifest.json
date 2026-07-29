@@ -1,0 +1,13 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/dashboard/equipamentos/page": "app/dashboard/equipamentos/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/relatorios/page": "app/dashboard/relatorios/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/login/page": "app/login/page.js",
+  "/manual/page": "app/manual/page.js",
+  "/os/[id]/page": "app/os/[id]/page.js",
+  "/page": "app/page.js",
+  "/qrcode/page": "app/qrcode/page.js"
+}

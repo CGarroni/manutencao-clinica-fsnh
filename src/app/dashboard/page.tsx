@@ -232,7 +232,7 @@ export default function DashboardPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-slate-100 flex flex-col justify-between text-slate-800">
+		<div className="min-h-screen flex flex-col justify-between text-slate-800">
 			{/* Header do Dashboard com Logotipo */}
 			<header className="w-full bg-[#0a2342] text-white px-4 py-3 shadow-md border-b border-slate-800">
 				<div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-start md:justify-between gap-4">
@@ -975,6 +975,10 @@ export default function DashboardPage() {
 					</div>
 				</div>
 			)}
+			<footer className="text-center py-4 text-[11px] text-slate-500 border-t border-slate-200 mt-auto">
+				Hospital Municipal de Novo Hamburgo — Setor de Manutenção e Engenharia
+				Clínica © {new Date().getFullYear()}
+			</footer>
 		</div>
 	);
 }

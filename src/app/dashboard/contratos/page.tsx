@@ -405,6 +405,10 @@ export default function ContratosPage() {
 					</div>
 				</div>
 			)}
+			<footer className="text-center py-4 text-[11px] text-slate-500 border-t border-slate-200 mt-auto">
+				Hospital Municipal de Novo Hamburgo — Setor de Manutenção e Engenharia
+				Clínica © {new Date().getFullYear()}
+			</footer>
 		</div>
 	);
 }

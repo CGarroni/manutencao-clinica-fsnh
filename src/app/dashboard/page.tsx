@@ -257,46 +257,78 @@ export default function DashboardPage() {
 					</div>
 
 					{/* MENU DESKTOP */}
-					<div className="hidden md:flex items-center gap-2">
+					<div className="hidden md:flex items-center flex-wrap gap-2 justify-end">
+						{/* Operacional */}
 						<Link
 							href="/dashboard/equipamentos"
 							className="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
 						>
 							🔧 Equipamentos
 						</Link>
+
+						{/* Novo: Estoque */}
+						<Link
+							href="/dashboard/estoque"
+							className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
+						>
+							📦 Estoque
+						</Link>
+
+						{/* Novo: Contratos */}
+						<Link
+							href="/dashboard/contratos"
+							className="bg-violet-600 hover:bg-violet-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
+						>
+							📄 Contratos
+						</Link>
+
 						<Link
 							href="/dashboard/relatorios"
 							className="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
 						>
-							📊 Relatório Geral
+							📊 Relatórios
 						</Link>
+
+						{/* Utilitários */}
 						<Link
 							href="/manual"
 							className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
 						>
-							📖 Manual do Sistema
+							📖 Manual
 						</Link>
 						<Link
 							href="/qrcode"
 							className="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors"
 						>
-							📱 Gerar QR Code
+							📱 QR Code
 						</Link>
 						<button
 							onClick={handleSair}
 							className="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
 						>
-							🚪 Sair / Logoff
+							🚪 Sair
 						</button>
 					</div>
 
-					{/* MENU MOBILE */}
+					{/* MENU MOBILE (Com rolagem horizontal fluida) */}
 					<div className="flex md:hidden overflow-x-auto pb-1 gap-2 scrollbar-none">
 						<Link
 							href="/dashboard/equipamentos"
 							className="shrink-0 bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1"
 						>
 							🔧 Equipamentos
+						</Link>
+						<Link
+							href="/dashboard/estoque"
+							className="shrink-0 bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1"
+						>
+							📦 Estoque
+						</Link>
+						<Link
+							href="/dashboard/contratos"
+							className="shrink-0 bg-violet-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1"
+						>
+							📄 Contratos
 						</Link>
 						<Link
 							href="/dashboard/relatorios"
@@ -614,8 +646,7 @@ export default function DashboardPage() {
 									</h3>
 								</div>
 								<p className="text-[11px] text-slate-500">
-									Atendimento Técnico e Histórico — Manutenção Clínica
-									FSNH
+									Atendimento Técnico e Histórico — Manutenção Clínica FSNH
 								</p>
 							</div>
 

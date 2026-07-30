@@ -8,6 +8,25 @@ import Image from "next/image";
 import logoFsnh from "@/assets/logo-fsnh.png";
 import Link from "next/link";
 
+const getStatusBadgeStyle = (status: string) => {
+  const statusLower = String(status || "aberto").trim().toLowerCase();
+
+  switch (statusLower) {
+    case "aberto":
+      return "bg-blue-50 text-blue-700 border-blue-200";
+    case "pendente":
+      return "bg-amber-50 text-amber-700 border-amber-200";
+    case "emprestimo":
+      return "bg-purple-50 text-purple-700 border-purple-200";
+    case "finalizado":
+      return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    case "descarte":
+      return "bg-rose-50 text-rose-700 border-rose-200";
+    default:
+      return "bg-gray-100 text-gray-800 border-gray-200";
+  }
+};
+
 export default function RelatoriosPage() {
 	const router = useRouter();
 	const [chamados, setChamados] = useState<any[]>([]);
@@ -109,33 +128,36 @@ export default function RelatoriosPage() {
 			return false;
 
 		// Filtros Temporais
-    if (filtros.tipoPeriodo !== 'todos' && filtros.tipoPeriodo !== 'personalizado') {
-      const dataStr = item.dataCriacao || item.dataHora || item.data;
-      let dataItem: Date;
+		if (
+			filtros.tipoPeriodo !== "todos" &&
+			filtros.tipoPeriodo !== "personalizado"
+		) {
+			const dataStr = item.dataCriacao || item.dataHora || item.data;
+			let dataItem: Date;
 
-      if (typeof dataStr === 'string' && dataStr.includes('/')) {
-        // Converte formato "DD/MM/YYYY HH:mm" para "YYYY-MM-DDTHH:mm:ss"
-        const [dataPart, horaPart = '00:00:00'] = dataStr.split(' ');
-        const [dia, mes, ano] = dataPart.split('/');
-        dataItem = new Date(`${ano}-${mes}-${dia}T${horaPart}`);
-      } else {
-        dataItem = new Date(dataStr || Date.now());
-      }
+			if (typeof dataStr === "string" && dataStr.includes("/")) {
+				// Converte formato "DD/MM/YYYY HH:mm" para "YYYY-MM-DDTHH:mm:ss"
+				const [dataPart, horaPart = "00:00:00"] = dataStr.split(" ");
+				const [dia, mes, ano] = dataPart.split("/");
+				dataItem = new Date(`${ano}-${mes}-${dia}T${horaPart}`);
+			} else {
+				dataItem = new Date(dataStr || Date.now());
+			}
 
-      const hoje = new Date();
+			const hoje = new Date();
 
-      if (filtros.tipoPeriodo === 'diario') {
-        if (dataItem.toDateString() !== hoje.toDateString()) return false;
-      } else if (filtros.tipoPeriodo === 'mensal') {
-        if (
-          dataItem.getMonth() !== hoje.getMonth() ||
-          dataItem.getFullYear() !== hoje.getFullYear()
-        )
-          return false;
-      } else if (filtros.tipoPeriodo === 'anual') {
-        if (dataItem.getFullYear() !== hoje.getFullYear()) return false;
-      }
-    }
+			if (filtros.tipoPeriodo === "diario") {
+				if (dataItem.toDateString() !== hoje.toDateString()) return false;
+			} else if (filtros.tipoPeriodo === "mensal") {
+				if (
+					dataItem.getMonth() !== hoje.getMonth() ||
+					dataItem.getFullYear() !== hoje.getFullYear()
+				)
+					return false;
+			} else if (filtros.tipoPeriodo === "anual") {
+				if (dataItem.getFullYear() !== hoje.getFullYear()) return false;
+			}
+		}
 
 		if (
 			filtros.tipoPeriodo === "personalizado" &&
@@ -486,7 +508,9 @@ export default function RelatoriosPage() {
 													{item.tecnico || "Não atribuído"}
 												</td>
 												<td className="py-3 px-4">
-													<span className="px-2 py-1 text-xs rounded-full font-semibold bg-gray-100 text-gray-800 uppercase">
+													<span
+														className={`px-2.5 py-1 text-xs rounded-full font-semibold border uppercase ${getStatusBadgeStyle(item.status)}`}
+													>
 														{item.status || "aberto"}
 													</span>
 												</td>

@@ -182,33 +182,47 @@ export default function AberturaChamadoPage() {
 				<div className="absolute inset-0 bg-[#0d233a]/85 backdrop-blur-[2px]"></div>
 			</div>
 
-			<header className="relative z-10 bg-[#0a192f]/90 border-b border-blue-900/50 py-3 px-4 sm:px-6 flex justify-between items-center shadow-md">
-				<div className="flex items-center gap-3">
-					<div className="bg-white p-1 rounded-full shadow shrink-0">
-						<Image
-							src={logoFsnh}
-							alt="Logo FSNH"
-							width={32}
-							height={32}
-							className="object-contain"
-						/>
-					</div>
-					<div>
-						<h1 className="font-bold text-sm sm:text-base tracking-wide text-white">
-							MANUTENÇÃO CLÍNICA
-						</h1>
-						<p className="text-[10px] sm:text-[11px] text-blue-300">
-							ORDEM DE SERVIÇO — FSNH
-						</p>
-					</div>
-				</div>
-				<Link
-					href="/dashboard"
-					className="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-md font-semibold transition shadow whitespace-nowrap"
-				>
-					← Voltar ao Painel
-				</Link>
-			</header>
+			<header className="bg-[#0a192f] z-10 text-white py-3 px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-3 shadow-md print:hidden">
+  <div className="flex items-center gap-3">
+    <div className="bg-white p-1 rounded-full shadow shrink-0">
+      <Image
+        src={logoFsnh}
+        alt="Logo FSNH"
+        width={35}
+        height={35}
+        className="object-contain"
+      />
+    </div>
+    <div>
+      <h1 className="font-bold text-base tracking-wide text-white">
+        MANUTENÇÃO CLÍNICA
+      </h1>
+      <p className="text-[11px] text-blue-300">
+        ABERTURA DE ORDEM DE SERVIÇO — FSNH
+      </p>
+    </div>
+  </div>
+
+  {/* Grupo com os 2 botões de navegação */}
+  <div className="flex items-center gap-2 flex-wrap justify-end">
+		{/* Botão 1: Abrir Nova OS / Recarregar em Nova Aba (Para limpar e abrir outro chamado) */}
+    <Link
+      href="/" 
+      target="_blank"
+      className="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-2 rounded-md font-semibold transition shadow cursor-pointer whitespace-nowrap"
+    >
+      + Nova OS
+    </Link>
+		{/* Botão 2: Voltar ao Painel (Para os técnicos logados) */}
+    <Link
+      href="/dashboard"
+      className="text-xs bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-md font-semibold transition shadow cursor-pointer whitespace-nowrap"
+    >
+      ← Voltar ao Painel
+    </Link>
+
+  </div>
+</header>
 
 			{/* Ajustado p-4 no mobile e p-6 no desktop para evitar cortes laterais */}
 			<main className="relative z-10 max-w-3xl w-full mx-auto p-4 sm:p-6 my-4 sm:my-8 bg-white/95 rounded-2xl shadow-2xl border border-white/20">

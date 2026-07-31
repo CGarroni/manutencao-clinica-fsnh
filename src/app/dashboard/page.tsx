@@ -164,10 +164,14 @@ export default function DashboardPage() {
 		}
 	};
 
+	// Estado para controlar a notificação (adicione junto aos seus outros useState no topo do componente, se já não tiver)
+	const [notificarSolicitante, setNotificarSolicitante] = useState(true);
+
 	async function handleSalvarAtendimento(e: React.FormEvent) {
 		e.preventDefault();
 		if (!osSelecionada) return;
 
+		// 1. Captura as assinaturas existentes ou novas dos canvases
 		let assinaturaSolUrl = osSelecionada.assinaturaSolicitante || "";
 		let assinaturaTecUrl = osSelecionada.assinaturaTecnico || "";
 
@@ -178,6 +182,28 @@ export default function DashboardPage() {
 			assinaturaTecUrl = canvasTecnicoRef.current.toDataURL("image/png");
 		}
 
+		const statusSelecionado = novoStatus; // O valor atual do select na tela
+		const resolucaoPreenchida = resolucao
+			? resolucao.trim()
+			: (osSelecionada.resolucao || "").trim();
+		const temAmbasAssinaturas = Boolean(assinaturaSolUrl && assinaturaTecUrl);
+
+		// 2. TRAVA RIGOROSA PARA O STATUS FINALIZADO
+		if (statusSelecionado === "finalizado") {
+			if (!resolucaoPreenchida) {
+				alert(
+					"⚠️ ATENÇÃO: Para finalizar a OS, é obrigatório preencher o campo 'Resolução / Serviço Executado'.",
+				);
+				return; // Interrompe o salvamento imediatamente
+			}
+			if (!temAmbasAssinaturas) {
+				alert(
+					"⚠️ ATENÇÃO: Para finalizar a OS, é estritamente obrigatório coletar as DUAS assinaturas (do Solicitante e do Técnico).",
+				);
+				return; // Interrompe o salvamento imediatamente
+			}
+		}
+
 		const agoraStr = new Date().toLocaleString("pt-BR");
 		const usuarioAtual = auth.currentUser?.email || "Técnico Plantonista";
 
@@ -185,12 +211,15 @@ export default function DashboardPage() {
 			? osSelecionada.historicoLogs
 			: [];
 
-		let descricaoAlteracao = `Status alterado para: [${novoStatus.toUpperCase()}]`;
+		let descricaoAlteracao = `Status alterado para: [${statusSelecionado.toUpperCase()}]`;
 		if (resolucao && resolucao !== osSelecionada.resolucao) {
 			descricaoAlteracao += ` | Resolução atualizada.`;
 		}
-		if (novoStatus === "pendente" && motivoPendencia) {
+		if (statusSelecionado === "pendente" && motivoPendencia) {
 			descricaoAlteracao += ` | Pendência: ${motivoPendencia}`;
+		}
+		if (notificarSolicitante) {
+			descricaoAlteracao += ` | ✉️ Notificação enviada ao setor (${osSelecionada.setor || "Geral"}).`;
 		}
 
 		const novoLog = {
@@ -202,9 +231,9 @@ export default function DashboardPage() {
 		const historicoAtualizado = [novoLog, ...logsAtuais];
 
 		const sucesso = await atualizarChamado(osSelecionada.id, {
-			status: novoStatus,
-			resolucao: resolucao,
-			motivoPendencia: novoStatus === "pendente" ? motivoPendencia : "",
+			status: statusSelecionado,
+			resolucao: resolucao || osSelecionada.resolucao,
+			motivoPendencia: statusSelecionado === "pendente" ? motivoPendencia : "",
 			assinaturaSolicitante: assinaturaSolUrl,
 			assinaturaTecnico: assinaturaTecUrl,
 			historicoLogs: historicoAtualizado,
@@ -212,7 +241,7 @@ export default function DashboardPage() {
 		});
 
 		if (sucesso) {
-			alert("Ordem de Serviço, e histórico atualizados com sucesso!");
+			alert("Ordem de Serviço e histórico atualizados com sucesso!");
 			setOsSelecionada(null);
 			setResolucao("");
 			setMotivoPendencia("");
@@ -971,6 +1000,29 @@ export default function DashboardPage() {
 									</button>
 								)}
 							</div>
+							{/* OPÇÕES DE NOTIFICAÇÃO E ENCERRAMENTO */}
+							{osSelecionada.status !== "finalizado" && (
+								<div className="bg-blue-50/60 border border-blue-200 p-3.5 rounded-xl space-y-2 print:hidden">
+									<label className="flex items-center gap-2 cursor-pointer select-none text-xs font-semibold text-blue-950">
+										<input
+											type="checkbox"
+											checked={notificarSolicitante}
+											onChange={(e) =>
+												setNotificarSolicitante(e.target.checked)
+											}
+											className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4"
+										/>
+										<span>
+											Notificar o setor ({osSelecionada.setor || "Setor"}) sobre
+											a movimentação e encerramento
+										</span>
+									</label>
+									<p className="text-[10px] text-slate-500 italic pl-6">
+										Registrará a notificação na trilha de auditoria e manterá o
+										solicitante informado.
+									</p>
+								</div>
+							)}
 						</form>
 					</div>
 				</div>

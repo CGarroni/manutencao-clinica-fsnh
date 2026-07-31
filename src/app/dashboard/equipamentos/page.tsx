@@ -133,7 +133,7 @@ export default function EquipamentosDashboardPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-between">
+		<div className="flex flex-col min-h-screen">
 			<header className="bg-[#0a192f] text-white py-3 px-6 flex justify-between items-center shadow-md">
 				<div className="flex items-center gap-3">
 					<div className="bg-white p-1 rounded-full shadow">

@@ -15,6 +15,7 @@ import {
 	deleteDoc,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { getMessaging, isSupported } from "firebase/messaging";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyA3FrGpdN7Ja4fyiYjxgjbeqvFCrd-RYOw",
@@ -29,6 +30,16 @@ const firebaseConfig = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+// 👇 Adicionado para suportar o PWA / Push Notifications
+export let messaging: any = null;
+if (typeof window !== 'undefined') {
+  isSupported().then((supported) => {
+    if (supported) {
+      messaging = getMessaging(app);
+    }
+  });
+}
 
 // Status dos Chamados
 export const STATUS = {

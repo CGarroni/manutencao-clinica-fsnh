@@ -35,7 +35,7 @@ export default function ManualPage() {
           href="/dashboard" 
           className="text-xs bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-md font-semibold transition shadow"
         >
-          ← Voltar ao Painel
+          Voltar ao Dashboard
         </Link>
 			</header>
 

@@ -183,55 +183,54 @@ export default function AberturaChamadoPage() {
 			</div>
 
 			<header className="bg-[#0a192f] z-10 text-white py-3 px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-3 shadow-md print:hidden">
-  <div className="flex items-center gap-3">
-    <div className="bg-white p-1 rounded-full shadow shrink-0">
-      <Image
-        src={logoFsnh}
-        alt="Logo FSNH"
-        width={35}
-        height={35}
-        className="object-contain"
-      />
-    </div>
-    <div>
-      <h1 className="font-bold text-base tracking-wide text-white">
-        MANUTENÇÃO CLÍNICA
-      </h1>
-      <p className="text-[11px] text-blue-300">
-        ABERTURA DE ORDEM DE SERVIÇO — FSNH
-      </p>
-    </div>
-  </div>
+				<div className="flex items-center gap-3">
+					<div className="bg-white p-1 rounded-full shadow shrink-0">
+						<Image
+							src={logoFsnh}
+							alt="Logo FSNH"
+							width={35}
+							height={35}
+							className="object-contain"
+						/>
+					</div>
+					<div>
+						<h1 className="font-bold text-base tracking-wide text-white">
+							MANUTENÇÃO CLÍNICA
+						</h1>
+						<p className="text-[11px] text-blue-300">
+							ABERTURA DE ORDEM DE SERVIÇO — FSNH
+						</p>
+					</div>
+				</div>
 
-  {/* Grupo com os 2 botões de navegação */}
-  <div className="flex items-center gap-2 flex-wrap justify-end">
-		{/* Botão 1: Abrir Nova OS / Recarregar em Nova Aba (Para limpar e abrir outro chamado) */}
-    <Link
-      href="/" 
-      target="_blank"
-      className="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-2 rounded-md font-semibold transition shadow cursor-pointer whitespace-nowrap"
-    >
-      + Nova OS
-    </Link>
-		{/* Botão 2: Voltar ao Painel (Para os técnicos logados) */}
-    <Link
-      href="/dashboard"
-      className="text-xs bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-md font-semibold transition shadow cursor-pointer whitespace-nowrap"
-    >
-      ← Voltar ao Painel
-    </Link>
-
-  </div>
-</header>
+				{/* Grupo com os 2 botões de navegação */}
+				<div className="flex items-center gap-2 flex-wrap justify-end">
+					{/* Botão 1: Abrir Nova OS / Recarregar em Nova Aba (Para limpar e abrir outro chamado) */}
+					<Link
+						href="/"
+						target="_blank"
+						className="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3.5 py-2 rounded-md font-semibold transition shadow cursor-pointer whitespace-nowrap"
+					>
+						Limpar OS
+					</Link>
+					{/* Botão 2: Voltar ao Dashboard (Para os técnicos logados) */}
+					<Link
+						href="/dashboard"
+						className="text-xs bg-slate-800 hover:bg-slate-700 text-white px-3.5 py-2 rounded-md font-semibold transition shadow cursor-pointer whitespace-nowrap"
+					>
+						Login/Restrito
+					</Link>
+				</div>
+			</header>
 
 			{/* Ajustado p-4 no mobile e p-6 no desktop para evitar cortes laterais */}
 			<main className="relative z-10 max-w-3xl w-full mx-auto p-4 sm:p-6 my-4 sm:my-8 bg-white/95 rounded-2xl shadow-2xl border border-white/20">
 				<div className="bg-[#0a192f] text-white py-2 px-4 rounded-xl text-center mb-6 shadow-inner">
-					<span className="text-[11px] tracking-wider text-blue-300 block uppercase font-semibold">
-						Nº do Chamado
+					<span className="text-base tracking-wider text-blue-300 block uppercase font-semibold">
+						CHAMADO
 					</span>
 					<span className="text-base sm:text-lg font-mono font-bold tracking-widest">
-						— (Gerado ao Salvar)
+						(Manutenção Clínica)
 					</span>
 				</div>
 
@@ -302,33 +301,51 @@ export default function AberturaChamadoPage() {
 					</div>
 
 					<div>
-						<h3 className="text-xs font-bold uppercase tracking-wider text-blue-900 border-b border-blue-200 pb-2 mb-4 flex items-center gap-2">
-							⚙️ Equipamento
-						</h3>
+  <h3 className="text-xs font-bold uppercase tracking-wider text-blue-900 border-b border-blue-200 pb-2 mb-4 flex items-center gap-2">
+    ⚙️ Equipamento
+  </h3>
 
-						<div className="space-y-4">
-							<div>
-								<label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
-									Nº de Patrimônio ou Número de Série (Busca Automática)
-								</label>
-								{/* Flex empilhado no mobile se necessário ou mantido lado a lado com gap otimizado */}
-								<div className="flex flex-col sm:flex-row gap-2">
-									<input
-										type="text"
-										value={form.buscaIdentificador}
-										onChange={(e) =>
-											setForm({ ...form, buscaIdentificador: e.target.value })
-										}
-										placeholder="Digite o patrimônio ou série..."
-										className="flex-1 bg-gray-50 border border-gray-300 rounded-lg p-3 sm:p-2.5 text-sm sm:text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
-									/>
-									<button
-										type="button"
-										onClick={handleBuscarEquipamento}
-										className="bg-blue-600 hover:bg-blue-500 text-white py-3 sm:py-0 px-5 rounded-lg text-xs font-semibold transition shadow flex items-center justify-center gap-1.5 cursor-pointer"
-									>
-										🔍 Buscar
-									</button>
+  <div className="space-y-4">
+    <div>
+      <label className="block text-[11px] font-bold uppercase text-slate-600 mb-1">
+        Nº de Patrimônio ou Número de Série (Busca Automática)
+      </label>
+      
+      {/* Container relativo para posicionar a lupa no final do input */}
+      <div className="relative flex items-center">
+        <input
+          type="text"
+          value={form.buscaIdentificador}
+          onChange={(e) =>
+            setForm({ ...form, buscaIdentificador: e.target.value })
+          }
+          placeholder="Digite o patrimônio ou série..."
+          // 'pr-9' garante espaço à direita para o texto não passar por cima da lupa
+          className="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 sm:p-2.5 pr-9 text-sm sm:text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
+        />
+        
+        {/* Botão de lupa discreto e funcional integrado à direita */}
+        <button
+          type="button"
+          onClick={handleBuscarEquipamento}
+          className="absolute right-3 text-slate-400 hover:text-blue-600 transition cursor-pointer flex items-center justify-center"
+          title="Buscar Equipamento"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-4 w-4" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+            />
+          </svg>
+        </button>
 								</div>
 							</div>
 
@@ -415,7 +432,7 @@ export default function AberturaChamadoPage() {
 						disabled={loading}
 						className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3.5 rounded-xl text-xs tracking-wider uppercase transition shadow-lg disabled:opacity-50 cursor-pointer"
 					>
-						{loading ? "Registrando Chamado..." : "Abrir Ordem de Serviço"}
+						{loading ? "Registrando Chamado..." : "Enviar Chamado..."}
 					</button>
 				</form>
 			</main>

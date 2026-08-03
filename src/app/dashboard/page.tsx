@@ -1,5 +1,6 @@
 "use client";
 
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useState, useEffect, useRef } from "react";
 import { listarChamados, atualizarChamado } from "@/lib/firebase";
 import Image from "next/image";
@@ -10,6 +11,7 @@ import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+	const { requestPermission, permissionGranted, token } = usePushNotifications();
 	const [chamados, setChamados] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [filtroStatus, setFiltroStatus] = useState("todos");
@@ -463,59 +465,88 @@ export default function DashboardPage() {
 				</div>
 
 				{/* BARRA DE FILTROS E BUSCA */}
-				<div className="bg-white p-4 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-center gap-4 print:hidden">
-					<div className="flex flex-wrap gap-2">
-						<button
-							onClick={() => setFiltroStatus("todos")}
-							className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "todos" ? "bg-[#0a192f] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
-						>
-							Todos
-						</button>
-						<button
-							onClick={() => setFiltroStatus("aberto")}
-							className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "aberto" ? "bg-amber-500 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
-						>
-							Em Aberto
-						</button>
-						<button
-							onClick={() => setFiltroStatus("pendente")}
-							className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "pendente" ? "bg-orange-500 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
-						>
-							Pendente
-						</button>
-						<button
-							onClick={() => setFiltroStatus("emprestimo")}
-							className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "emprestimo" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
-						>
-							Empréstimo
-						</button>
-						<button
-							onClick={() => setFiltroStatus("finalizado")}
-							className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "finalizado" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
-						>
-							Finalizados
-						</button>
-						<button
-							onClick={() => setFiltroStatus("descarte")}
-							className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "descarte" ? "bg-red-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
-						>
-							Descarte
-						</button>
-					</div>
+        <div className="bg-white p-4 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-center gap-4 print:hidden">
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setFiltroStatus("todos")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "todos" ? "bg-[#0a192f] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+            >
+              Todos
+            </button>
+            <button
+              onClick={() => setFiltroStatus("aberto")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "aberto" ? "bg-amber-500 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+            >
+              Em Aberto
+            </button>
+            <button
+              onClick={() => setFiltroStatus("pendente")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "pendente" ? "bg-orange-500 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+            >
+              Pendente
+            </button>
+            <button
+              onClick={() => setFiltroStatus("emprestimo")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "emprestimo" ? "bg-purple-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+            >
+              Empréstimo
+            </button>
+            <button
+              onClick={() => setFiltroStatus("finalizado")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "finalizado" ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+            >
+              Finalizados
+            </button>
+            <button
+              onClick={() => setFiltroStatus("descarte")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${filtroStatus === "descarte" ? "bg-red-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+            >
+              Descarte
+            </button>
+          </div>
 
-					<div className="w-full md:w-72">
-						<input
-							type="text"
-							value={busca}
-							onChange={(e) => setBusca(e.target.value)}
-							placeholder="Buscar por setor, OS, equipamento..."
-							className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
-						/>
-					</div>
-				</div>
+          <div className="w-full md:w-72">
+            <input
+              type="text"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Buscar por setor, OS, equipamento..."
+              className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+        </div>
 
-				{/* LISTAGEM DE CARDS DE ORDENS DE SERVIÇO */}
-				<div className="bg-white rounded-xl shadow-sm p-6 print:hidden">
+        {/* 🔔 BLOCO DE CONFIGURAÇÃO DE NOTIFICAÇÕES PUSH NO PWA */}
+        <div className="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between gap-4 print:hidden">
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl">🔔</span>
+            <div>
+              <h4 className="text-xs font-bold uppercase text-slate-700">Notificações Push do PWA</h4>
+              <p className="text-[11px] text-slate-500">
+                {permissionGranted 
+                  ? "As notificações deste aparelho estão ativadas para novos chamados." 
+                  : "Ative para receber avisos de novas OS direto na tela de bloqueio."}
+              </p>
+            </div>
+          </div>
+
+          {!permissionGranted && (
+            <button
+              onClick={requestPermission}
+              className="bg-cyan-700 hover:bg-cyan-600 text-white px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer shrink-0 shadow-sm"
+            >
+              Ativar Notificações
+            </button>
+          )}
+          {permissionGranted && (
+            <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">
+              Ativo ✅
+            </span>
+          )}
+        </div>
+
+        {/* LISTAGEM DE CARDS DE ORDENS DE SERVIÇO */}
+        <div className="bg-white rounded-xl shadow-sm p-6 print:hidden">
 					<h3 className="text-xs font-bold uppercase tracking-wider text-blue-900 border-b border-slate-200 pb-3 mb-6 flex items-center justify-between">
 						<span>📋 Ordens de Serviço ({chamadosFiltrados.length})</span>
 						<Link
@@ -523,7 +554,7 @@ export default function DashboardPage() {
 							target="_blank"
 							className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold transition shadow"
 						>
-							+ Abrir Nova OS
+							Abrir OS
 						</Link>
 					</h3>
 

@@ -4,8 +4,8 @@
   "description": "Sistema de Gestão de Ordens de Serviço - Hospital Municipal de Novo Hamburgo",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#0a192f",
-  "theme_color": "#0a192f",
+  "background_color": "#0a2342",
+  "theme_color": "#0a2342",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -15,8 +15,7 @@
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
